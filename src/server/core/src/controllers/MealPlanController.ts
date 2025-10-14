@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { serializeBigIntObject } from "../utils/serialization";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import prisma from "../../prisma/client";
 
-const prisma = require("../../prisma/client");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || "gemini-2.5-flash-lite";
 

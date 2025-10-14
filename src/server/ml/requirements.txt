@@ -6,3 +6,5 @@ timm
 Pillow
 python-multipart
 hf_xet
+google-generativeai
+python-dotenv

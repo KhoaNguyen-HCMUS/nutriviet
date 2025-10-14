@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import { serializeBigIntObject } from "../utils/serialization";
-
-const prisma = require("../../prisma/client");
+import prisma from "../../prisma/client";
 
 const PromptBody = z.object({
   prompt_text: z.string(),

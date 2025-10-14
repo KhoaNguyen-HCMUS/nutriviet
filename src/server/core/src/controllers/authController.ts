@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt, { SignOptions } from 'jsonwebtoken';
-const prisma = require("../../prisma/client");
+import prisma from "../../prisma/client";
 import { z } from 'zod';
 
 // Validation schemas

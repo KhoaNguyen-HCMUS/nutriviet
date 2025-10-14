@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { PrismaClient } from "../generated/prisma";
 import { z } from "zod";
 import { serializeProfile } from "../utils/serialization";
 
-const prisma = require("../../prisma/client");
+const prisma = new PrismaClient();
 
 const toNum = (d?: Prisma.Decimal | number | null, def = 0) =>
   d == null ? def : Number(d);

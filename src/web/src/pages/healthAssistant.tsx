@@ -10,7 +10,6 @@ const HealthAssistant: React.FC = () => {
 
   return (
     <div className="h-screen bg-gray-50">
-      <title>Trợ lý Y khoa AI - Health Assistant</title>
       <ChatContainer />
     </div>
   );

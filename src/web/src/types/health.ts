@@ -15,30 +15,29 @@ export interface HealthProfile {
 export interface PersonalInfo {
   age: number;
   gender: 'male' | 'female';
-  height: number; 
-  weight: number; 
-  location: string; 
+  height: number;
+  weight: number;
+  location: string;
 }
 
 export interface HealthGoals {
   primary: 'lose' | 'maintain' | 'gain';
-  targetWeight?: number; 
   targetDate?: Date;
 }
 
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
 
 export interface MedicalInfo {
-  conditions: string; 
-  allergies: string; 
+  conditions: string;
+  allergies: string;
   medications: string;
-  preferences?: string; 
+  preferences?: string;
 }
 
 export interface MeasurementUnits {
-  weight: string; 
-  height: string; 
-  temperature: string; 
+  weight: string;
+  height: string;
+  temperature: string;
 }
 
 export interface HealthIndices {
@@ -46,9 +45,9 @@ export interface HealthIndices {
     value: number;
     category: 'underweight' | 'normal' | 'overweight' | 'obese';
   };
-  bmr: number; 
-  tdee: number; 
-  recommendedCalories: number; 
+  bmr: number;
+  tdee: number;
+  recommendedCalories: number;
 }
 
 export interface ActivityFactor {

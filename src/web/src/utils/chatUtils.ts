@@ -3,8 +3,13 @@ import type { ChatMessage } from '../types/chat';
 export class ChatUtils {
   // Format timestamp for display
   static formatMessageTime(date: Date | string): string {
-    const now = new Date();
+
+    if (!date) return '';
+
     const messageDate = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(messageDate.getTime())) return '';
+    
+    const now = new Date();
     const diffInHours = Math.abs(now.getTime() - messageDate.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) {

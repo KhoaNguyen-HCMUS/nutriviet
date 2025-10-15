@@ -3,6 +3,7 @@ import type { ChatMessage } from '../../types/chat';
 import MessageItem from './messageItem';
 import TypingIndicator from './typingIndicator';
 
+
 interface MessageListProps {
   messages: ChatMessage[];
   isLoading?: boolean;

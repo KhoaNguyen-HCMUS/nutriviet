@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ChatMessage } from '../../types/chat';
 import { ChatUtils } from '../../utils/chatUtils';
-
+import ReactMarkdown from 'react-markdown';
 interface MessageItemProps {
   message: ChatMessage;
 }
@@ -37,7 +37,11 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
                   : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'
               }`}
             >
-              <div className='whitespace-pre-wrap text-[15px] leading-relaxed'>{content}</div>
+              
+              <div className='whitespace-pre-wrap text-[15px] leading-relaxed'>
+                <ReactMarkdown>{content}</ReactMarkdown>
+              </div>
+            
 
               {/* Medical Citations */}
               {citations.length > 0 && !isUser && (

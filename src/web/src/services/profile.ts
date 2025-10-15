@@ -3,12 +3,13 @@ import { requestAuth } from '../utils/api';
 export interface ProfileResponse {
   success: boolean;
   data: {
-    user: { 
-      id: string; 
-      email: string; 
+    user?: {
+      id: string;
+      email: string;
       created_at: string;
     };
     profile: {
+      age?: string;
       height_cm: string;
       weight_kg: string;
       sex: string;
@@ -23,12 +24,13 @@ export interface ProfileResponse {
       preferences_json?: string;
       consent_accepted_at?: string | null;
     };
-  }
+  };
 }
 
 export interface ProfileUpdateRequest {
-  height_cm: string;
-  weight_kg: string;
+  age: number;
+  height_cm: number;
+  weight_kg: number;
   sex: string;
   activity_level: string;
   goal: string;
@@ -47,6 +49,7 @@ interface FlexibleProfileResponse {
       created_at?: string;
     };
     profile?: {
+      age?: string | number;
       height_cm?: string;
       weight_kg?: string;
       sex?: string;
@@ -62,6 +65,7 @@ interface FlexibleProfileResponse {
       consent_accepted_at?: string | null;
     };
     // For direct properties in data (flat structure)
+    age?: string | number;
     height_cm?: string;
     weight_kg?: string;
     sex?: string;
@@ -80,149 +84,84 @@ interface FlexibleProfileResponse {
 
 export const getProfile = async (): Promise<ProfileResponse> => {
   try {
-    const response = await requestAuth<FlexibleProfileResponse>('GET', '/api/auth/profile');
+    const response = await requestAuth<FlexibleProfileResponse>('GET', '/api/profile');
     console.log('Raw profile response:', response);
 
-    // Check if the API response matches our expected structure
-    // If not, try to adapt it to our expected format
-    if (response && response.success) {
-      if (!response.data) {
-        throw new Error('Missing data property in API response');
-      }
+    // Nutrition profile endpoint returns the profile object directly or null
+    const flat = response as unknown as FlexibleProfileResponse;
+    const dataObj = flat && (flat as any);
 
-      // If the response doesn't have nested profile structure, try to adapt it
-      if (!response.data.profile && (
-          response.data.height_cm || 
-          response.data.weight_kg || 
-          response.data.sex)) {
-        
-        console.log('Converting flat profile structure to nested structure');
-        
-        // The profile data is directly in the data object, create the nested structure
-        return {
-          success: response.success,
-          data: {
-            user: {
-              id: response.data.user?.id || '1', 
-              email: response.data.user?.email || 'user@example.com', 
-              created_at: response.data.user?.created_at || new Date().toISOString() 
-            },
-            profile: {
-              height_cm: response.data.height_cm || '0',
-              weight_kg: response.data.weight_kg || '0',
-              sex: response.data.sex || 'male',
-              activity_level: response.data.activity_level || 'moderate',
-              goal: response.data.goal || 'maintain',
-              bmi: response.data.bmi || '0',
-              bmr: response.data.bmr || '0',
-              tdee: response.data.tdee || '0',
-              updated_at: response.data.updated_at || new Date().toISOString(),
-              conditions_json: response.data.conditions_json || '[]',
-              allergies_json: response.data.allergies_json || '[]',
-              preferences_json: response.data.preferences_json || '[]',
-              consent_accepted_at: response.data.consent_accepted_at
-            }
-          }
-        };
+    const profileFlat = dataObj && (dataObj.data || dataObj);
+    if (!profileFlat) throw new Error('No profile data');
+
+    const conditionsVal = (profileFlat.conditions_json ?? []) as unknown;
+    const allergiesVal = (profileFlat.allergies_json ?? []) as unknown;
+    const preferencesVal = (profileFlat.preferences_json ?? []) as unknown;
+
+    const toJsonString = (v: unknown) => {
+      if (typeof v === 'string') return v;
+      try {
+        return JSON.stringify(v ?? []);
+      } catch {
+        return '[]';
       }
-      
-      // Check if the response has all required properties for ProfileResponse
-      if (response.data.profile) {
-        const profile = response.data.profile;
-        const user = {
-          id: response.data.user?.id || '1',
-          email: response.data.user?.email || 'user@example.com',
-          created_at: response.data.user?.created_at || new Date().toISOString()
-        };
-        
-        // Ensure all required properties exist
-        return {
-          success: response.success,
-          data: {
-            user,
-            profile: {
-              height_cm: profile.height_cm || '0',
-              weight_kg: profile.weight_kg || '0',
-              sex: profile.sex || 'male',
-              activity_level: profile.activity_level || 'moderate',
-              goal: profile.goal || 'maintain',
-              bmi: profile.bmi || '0',
-              bmr: profile.bmr || '0',
-              tdee: profile.tdee || '0',
-              updated_at: profile.updated_at || new Date().toISOString(),
-              conditions_json: profile.conditions_json || '[]',
-              allergies_json: profile.allergies_json || '[]',
-              preferences_json: profile.preferences_json || '[]',
-              consent_accepted_at: profile.consent_accepted_at
-            }
-          }
-        };
-      }
-    }
-    
-    throw new Error('Invalid API response structure');
-  } catch (error) {
-    console.error('Error in getProfile service:', error);
-    // Return mock data if API call fails for development purposes
+    };
+
     return {
       success: true,
       data: {
-        user: { 
-          id: '1', 
-          email: 'user@example.com', 
-          created_at: '2025-09-29T09:10:33.4412' 
-        },
         profile: {
-          height_cm: '170',
-          weight_kg: '65',
-          sex: 'male',
-          activity_level: 'moderate',
-          goal: 'maintain',
-          bmi: '22.49',
-          bmr: '1577.5',
-          tdee: '2445',
-          updated_at: '2025-09-29T17:02:59.5132',
-          conditions_json: '["high_blood_pressure"]',
-          allergies_json: '["nuts", "dairy"]',
-          preferences_json: '["vegetarian", "low_sodium"]',
-          consent_accepted_at: '2025-09-29T09:10:33.4412'
-        }
-      }
+          age: profileFlat.age != null ? String(profileFlat.age) : undefined,
+          height_cm: profileFlat.height_cm || '0',
+          weight_kg: profileFlat.weight_kg || '0',
+          sex: profileFlat.sex || 'male',
+          activity_level: profileFlat.activity_level || 'moderate',
+          goal: profileFlat.goal || 'maintain',
+          bmi: profileFlat.bmi || '0',
+          bmr: profileFlat.bmr || '0',
+          tdee: profileFlat.tdee || '0',
+          updated_at: profileFlat.updated_at || new Date().toISOString(),
+          conditions_json: toJsonString(conditionsVal),
+          allergies_json: toJsonString(allergiesVal),
+          preferences_json: toJsonString(preferencesVal),
+          consent_accepted_at: profileFlat.consent_accepted_at ?? null,
+        },
+      },
     };
+  } catch (error) {
+    console.error('Error in getProfile service:', error);
+    throw error;
   }
 };
 
 export const updateProfile = async (profileData: ProfileUpdateRequest): Promise<ProfileResponse> => {
   try {
-    const response = await requestAuth<ProfileResponse, ProfileUpdateRequest>('PUT', '/api/auth/profile', profileData);
-    return response;
-  } catch (error) {
-    console.error('Error in updateProfile service:', error);
-    // Return mock updated data for development purposes
+    const response = await requestAuth<any, ProfileUpdateRequest>('PUT', '/api/profile', profileData);
+    const apiProfile = response?.profile || response?.data?.profile || response;
+    if (!apiProfile) throw new Error('Invalid update response');
     return {
       success: true,
       data: {
-        user: { 
-          id: '1', 
-          email: 'user@example.com', 
-          created_at: '2025-09-29T09:10:33.4412' 
-        },
         profile: {
-          height_cm: profileData.height_cm,
-          weight_kg: profileData.weight_kg,
-          sex: profileData.sex,
-          activity_level: profileData.activity_level,
-          goal: profileData.goal,
-          bmi: '22.49', // Calculated value in a real scenario
-          bmr: '1577.5', // Calculated value in a real scenario
-          tdee: '2445', // Calculated value in a real scenario
-          updated_at: new Date().toISOString(),
+          age: String(profileData.age),
+          height_cm: String(apiProfile.height_cm ?? profileData.height_cm),
+          weight_kg: String(apiProfile.weight_kg ?? profileData.weight_kg),
+          sex: String(apiProfile.sex ?? profileData.sex),
+          activity_level: String(apiProfile.activity_level ?? profileData.activity_level),
+          goal: String(apiProfile.goal ?? profileData.goal),
+          bmi: String(apiProfile.bmi ?? '0'),
+          bmr: String(apiProfile.bmr ?? '0'),
+          tdee: String(apiProfile.tdee ?? '0'),
+          updated_at: apiProfile.updated_at || new Date().toISOString(),
           conditions_json: profileData.conditions_json || '[]',
           allergies_json: profileData.allergies_json || '[]',
           preferences_json: profileData.preferences_json || '[]',
-          consent_accepted_at: new Date().toISOString()
-        }
-      }
+          consent_accepted_at: apiProfile.consent_accepted_at ?? null,
+        },
+      },
     };
+  } catch (error) {
+    console.error('Error in updateProfile service:', error);
+    throw error;
   }
 };

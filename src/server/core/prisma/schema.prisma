@@ -117,6 +117,7 @@ model meals {
 
 model profiles {
   user_id             BigInt    @id
+  age                 Int?
   height_cm           Decimal?  @db.Decimal(6, 2)
   weight_kg           Decimal?  @db.Decimal(6, 2)
   sex                 String?

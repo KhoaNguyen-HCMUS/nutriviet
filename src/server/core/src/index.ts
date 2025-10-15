@@ -1,3 +1,5 @@
+import "./config/dotenv-config";
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -22,10 +24,7 @@ app.use("/api", nutritionRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/food", foodRoutes);
 
-
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 const PORT = Number(process.env.PORT) || 5000;
 app.listen(PORT, () => console.log(`[Core API] listening on ${PORT}`));
-
-

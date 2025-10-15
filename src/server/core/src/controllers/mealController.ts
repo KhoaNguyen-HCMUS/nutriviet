@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "../generated/prisma";
+import { Prisma } from "../generated/prisma";
 import { z } from "zod";
 import { serializeBigIntObject } from "../utils/serialization";
 
-const prisma = new PrismaClient();
+const prisma = require("../../prisma/client");
 
 const toNum = (d?: Prisma.Decimal | number | null, def = 0) =>
   d == null ? def : Number(d);

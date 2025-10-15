@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "../generated/prisma";
+import { Prisma } from "../generated/prisma";
 import { z } from "zod";
 import { serializeBigIntObject } from "../utils/serialization";
 
 // Prisma Client
-const prisma = new PrismaClient();
+const prisma = require("../../prisma/client");
 
 // ====== LLM (Gemini) wiring ======
 import { GoogleGenerativeAI } from "@google/generative-ai";

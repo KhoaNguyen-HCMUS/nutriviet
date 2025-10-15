@@ -1,26 +1,28 @@
-import bcrypt from 'bcryptjs';
-import jwt, { SignOptions } from 'jsonwebtoken';
+import bcrypt from "bcryptjs";
+import jwt, { SignOptions } from "jsonwebtoken";
 import prisma from "../../prisma/client";
-import { z } from 'zod';
+import { z } from "zod";
 
 // Validation schemas
-const registerSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Password confirmation is required'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Password confirmation is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(1, "Password is required"),
 });
 
 // JWT secret (should be in environment variables)
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = '7d';
+const JWT_EXPIRES_IN = "7d";
 
 // Types
 interface AuthRequest {
@@ -44,11 +46,11 @@ export class AuthController {
     try {
       // Validate request body
       const validationResult = registerSchema.safeParse(req.body);
-      
+
       if (!validationResult.success) {
         return res.status(400).json({
-          error: 'Validation failed',
-          details: validationResult.error.issues
+          error: "Validation failed",
+          details: validationResult.error.issues,
         });
       }
 
@@ -56,13 +58,13 @@ export class AuthController {
 
       // Check if user already exists
       const existingUser = await prisma.users.findUnique({
-        where: { email }
+        where: { email },
       });
 
       if (existingUser) {
         return res.status(409).json({
-          error: 'User already exists',
-          message: 'An account with this email address already exists'
+          error: "User already exists",
+          message: "An account with this email address already exists",
         });
       }
 
@@ -80,28 +82,28 @@ export class AuthController {
           id: true,
           email: true,
           created_at: true,
-        }
+        },
       });
 
       // Generate JWT token
       if (!JWT_SECRET) {
         return res.status(500).json({
-          error: 'JWT secret not configured',
-          message: 'Server misconfiguration: JWT secret missing'
+          error: "JWT secret not configured",
+          message: "Server misconfiguration: JWT secret missing",
         });
       }
       const token = jwt.sign(
-        { 
-          userId: user.id.toString(), 
-          email: user.email 
+        {
+          userId: user.id.toString(),
+          email: user.email,
         },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: "7d" }
       );
 
       return res.status(201).json({
         success: true,
-        message: 'User registered successfully',
+        message: "User registered successfully",
         data: {
           user: {
             id: user.id.toString(),
@@ -109,14 +111,16 @@ export class AuthController {
             created_at: user.created_at,
           },
           token,
-        }
+        },
       });
-
     } catch (error) {
-      console.error('❌ Registration error:', error);
+      console.error("❌ Registration error:", error);
       return res.status(500).json({
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Registration failed'
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : "Registration failed",
       });
     }
   }
@@ -126,11 +130,11 @@ export class AuthController {
     try {
       // Validate request body
       const validationResult = loginSchema.safeParse(req.body);
-      
+
       if (!validationResult.success) {
         return res.status(400).json({
-          error: 'Validation failed',
-          details: validationResult.error.issues
+          error: "Validation failed",
+          details: validationResult.error.issues,
         });
       }
 
@@ -144,45 +148,48 @@ export class AuthController {
           email: true,
           password_hash: true,
           created_at: true,
-        }
+        },
       });
 
       if (!user) {
         return res.status(401).json({
-          error: 'Authentication failed',
-          message: 'Invalid email or password'
+          error: "Authentication failed",
+          message: "Invalid email or password",
         });
       }
 
       // Verify password
-      const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.password_hash
+      );
 
       if (!isPasswordValid) {
         return res.status(401).json({
-          error: 'Authentication failed',
-          message: 'Invalid email or password'
+          error: "Authentication failed",
+          message: "Invalid email or password",
         });
       }
 
       // Generate JWT token
       if (!JWT_SECRET) {
         return res.status(500).json({
-          error: 'JWT secret not configured',
-          message: 'Server misconfiguration: JWT secret missing'
+          error: "JWT secret not configured",
+          message: "Server misconfiguration: JWT secret missing",
         });
       }
       const token = jwt.sign(
-        { 
-          userId: user.id.toString(), 
-          email: user.email 
+        {
+          userId: user.id.toString(),
+          email: user.email,
         },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: "7d" }
       );
 
       return res.json({
         success: true,
-        message: 'Login successful',
+        message: "Login successful",
         data: {
           user: {
             id: user.id.toString(),
@@ -190,14 +197,16 @@ export class AuthController {
             created_at: user.created_at,
           },
           token,
-        }
+        },
       });
-
     } catch (error) {
-      console.error('❌ Login error:', error);
+      console.error("❌ Login error:", error);
       return res.status(500).json({
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Login failed'
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : "Login failed",
       });
     }
   }
@@ -207,8 +216,8 @@ export class AuthController {
     try {
       if (!req.user) {
         return res.status(401).json({
-          error: 'Authentication required',
-          message: 'Please log in to access this resource'
+          error: "Authentication required",
+          message: "Please log in to access this resource",
         });
       }
 
@@ -230,15 +239,15 @@ export class AuthController {
               bmr: true,
               tdee: true,
               updated_at: true,
-            }
-          }
-        }
+            },
+          },
+        },
       });
 
       if (!user) {
         return res.status(404).json({
-          error: 'User not found',
-          message: 'User profile not found'
+          error: "User not found",
+          message: "User profile not found",
         });
       }
 
@@ -250,15 +259,17 @@ export class AuthController {
             email: user.email,
             created_at: user.created_at,
             profile: user.profiles || null,
-          }
-        }
+          },
+        },
       });
-
     } catch (error) {
-      console.error('❌ Get profile error:', error);
+      console.error("❌ Get profile error:", error);
       return res.status(500).json({
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Failed to get profile'
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : "Failed to get profile",
       });
     }
   }
@@ -268,40 +279,42 @@ export class AuthController {
     try {
       if (!req.user) {
         return res.status(401).json({
-          error: 'Authentication required',
-          message: 'Please log in to refresh token'
+          error: "Authentication required",
+          message: "Please log in to refresh token",
         });
       }
 
       // Generate new JWT token
       if (!JWT_SECRET) {
         return res.status(500).json({
-          error: 'JWT secret not configured',
-          message: 'Server misconfiguration: JWT secret missing'
+          error: "JWT secret not configured",
+          message: "Server misconfiguration: JWT secret missing",
         });
       }
       const token = jwt.sign(
-        { 
-          userId: req.user.id, 
-          email: req.user.email 
+        {
+          userId: req.user.id,
+          email: req.user.email,
         },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: "7d" }
       );
 
       return res.json({
         success: true,
-        message: 'Token refreshed successfully',
+        message: "Token refreshed successfully",
         data: {
           token,
-        }
+        },
       });
-
     } catch (error) {
-      console.error('❌ Token refresh error:', error);
+      console.error("❌ Token refresh error:", error);
       return res.status(500).json({
-        error: 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? (error as Error).message : 'Token refresh failed'
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? (error as Error).message
+            : "Token refresh failed",
       });
     }
   }

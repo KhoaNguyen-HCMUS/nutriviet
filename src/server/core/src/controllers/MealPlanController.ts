@@ -77,17 +77,19 @@ export class MealPlanController {
       }
 
       // Step 3: Get user preferences from profile.preferences_json (Use Case step 3)
-      const userPreferences = profile.preferences_json || {};
+      const userPreferences = (profile.preferences_json as any) || {};
       const mergedPreferences = {
-        ...userPreferences,
+        ...(userPreferences as any),
         ...preferences, // Override with request preferences
       };
 
       // Step 4: Compute nutrition targets (Use Case step 4) with personalization
       // Prefer request focus over stored profile goal for this plan
-      const planGoal = mergedPreferences?.focus
-        ? mapFocusToGoal(mergedPreferences.focus)
-        : profile.goal || "maintain";
+      const planGoal = (
+        mergedPreferences?.focus
+          ? mapFocusToGoal(mergedPreferences.focus)
+          : profile.goal || "maintain"
+      ) as "lose" | "gain" | "maintain";
 
       const tdee = Number(profile.tdee || 2000);
       const goalMultiplier =
@@ -140,7 +142,7 @@ export class MealPlanController {
                   (duration === "weekly" ? 7 : 30) * 24 * 60 * 60 * 1000
               ).toISOString(),
               cached: true,
-            },
+            } as any,
             nutrition_cache_json: {
               daily_targets: nutritionTargets,
               total_days: duration === "weekly" ? 7 : 30,
@@ -160,7 +162,7 @@ export class MealPlanController {
               created_at: masterMeal.date_time,
               plan_data: cachedPlan.data,
               nutrition_targets: nutritionTargets,
-              grocery_list: generateGroceryList(cachedPlan.data),
+              grocery_list: generateGroceryList(cachedPlan.data) as any,
             },
             performance: {
               cached: true,
@@ -256,9 +258,9 @@ export class MealPlanController {
           where: { id: masterMeal.id },
           data: {
             ai_notes_json: {
-              ...masterMeal.ai_notes_json,
+              ...(masterMeal.ai_notes_json as any),
               grocery_list: groceryList,
-            },
+            } as any,
           },
         })
         .catch((err: any) =>
@@ -360,10 +362,10 @@ export class MealPlanController {
 
       const formattedPlans = mealPlans.map((plan: any) => ({
         id: plan.id.toString(),
-        title: plan.ai_notes_json?.title || "Meal Plan",
+        title: (plan.ai_notes_json as any)?.title || "Meal Plan",
         duration: plan.meal_slot, // weekly/monthly
         created_at: plan.date_time,
-        nutrition_targets: plan.nutrition_cache_json?.daily_targets,
+        nutrition_targets: (plan.nutrition_cache_json as any)?.daily_targets,
         plan_overview: plan.nutrition_cache_json,
       }));
 
@@ -395,14 +397,14 @@ export class MealPlanController {
 
       const formattedPlan = {
         id: mealPlan.id.toString(),
-        title: mealPlan.ai_notes_json?.title || "Meal Plan",
+        title: (mealPlan.ai_notes_json as any)?.title || "Meal Plan",
         duration: mealPlan.meal_slot,
         created_at: mealPlan.date_time,
-        plan_data: mealPlan.ai_notes_json?.plan_data,
-        nutrition_targets: mealPlan.ai_notes_json?.nutrition_targets,
-        grocery_list: mealPlan.ai_notes_json?.grocery_list,
-        start_date: mealPlan.ai_notes_json?.start_date,
-        end_date: mealPlan.ai_notes_json?.end_date,
+        plan_data: (mealPlan.ai_notes_json as any)?.plan_data,
+        nutrition_targets: (mealPlan.ai_notes_json as any)?.nutrition_targets,
+        grocery_list: (mealPlan.ai_notes_json as any)?.grocery_list,
+        start_date: (mealPlan.ai_notes_json as any)?.start_date,
+        end_date: (mealPlan.ai_notes_json as any)?.end_date,
       };
 
       const serializedMealPlan = serializeBigIntObject(formattedPlan);
@@ -432,25 +434,27 @@ export class MealPlanController {
       }
 
       // Get existing grocery list or regenerate
-      let groceryList = mealPlan.ai_notes_json?.grocery_list;
-      if (!groceryList && mealPlan.ai_notes_json?.plan_data) {
-        groceryList = generateGroceryList(mealPlan.ai_notes_json.plan_data);
+      let groceryList = (mealPlan.ai_notes_json as any)?.grocery_list;
+      if (!groceryList && (mealPlan.ai_notes_json as any)?.plan_data) {
+        groceryList = generateGroceryList(
+          (mealPlan.ai_notes_json as any).plan_data
+        );
 
         // Update meal plan with generated grocery list
         const updatedAiNotes = {
-          ...mealPlan.ai_notes_json,
+          ...(mealPlan.ai_notes_json as any),
           grocery_list: groceryList,
         };
 
         await prisma.meals.update({
           where: { id: plan_id },
-          data: { ai_notes_json: updatedAiNotes },
+          data: { ai_notes_json: updatedAiNotes as any },
         });
       }
 
       res.json({
         grocery_list: groceryList || [],
-        meal_plan_title: mealPlan.ai_notes_json?.title || "Meal Plan",
+        meal_plan_title: (mealPlan.ai_notes_json as any)?.title || "Meal Plan",
         generated_at: new Date().toISOString(),
       });
     } catch (error: any) {
@@ -498,12 +502,13 @@ export class MealPlanController {
       console.log("🔄 Finding substitute for:", dish_to_replace.name);
 
       // --- Macro budget computation to protect daily targets ---
-      const planData = mealPlan.ai_notes_json?.plan_data || {};
+      const planData = (mealPlan.ai_notes_json as any)?.plan_data || {};
       const dayKey = `day_${day_index}`;
       const dayMealsBefore = planData[dayKey] || {};
       const originalDishInPlan = dayMealsBefore[meal_slot] || dish_to_replace;
 
-      const dailyTargets = mealPlan.ai_notes_json?.nutrition_targets || {};
+      const dailyTargets =
+        (mealPlan.ai_notes_json as any)?.nutrition_targets || {};
       const MARGIN = 0.05; // 5% slack
 
       const totalsBefore = sumDayMacros(dayMealsBefore);
@@ -537,7 +542,7 @@ export class MealPlanController {
       substitute = scaled.dish;
 
       // Validate after-substitution totals
-      const currentPlanData = mealPlan.ai_notes_json?.plan_data || {};
+      const currentPlanData = (mealPlan.ai_notes_json as any)?.plan_data || {};
       const simulatedDay = { ...dayMealsBefore, [meal_slot]: substitute };
       const totalsAfter = sumDayMacros(simulatedDay);
       const overCal =
@@ -588,11 +593,11 @@ export class MealPlanController {
       const updatedGroceryList = generateGroceryList(updatedPlanData);
 
       const updatedAiNotes = {
-        ...mealPlan.ai_notes_json,
+        ...(mealPlan.ai_notes_json as any),
         plan_data: updatedPlanData,
         grocery_list: updatedGroceryList,
         substitutions: [
-          ...(mealPlan.ai_notes_json?.substitutions || []),
+          ...((mealPlan.ai_notes_json as any)?.substitutions || []),
           substitutionRecord,
         ],
       };
@@ -688,14 +693,14 @@ export class MealPlanController {
       }
 
       const updatedAiNotes = {
-        ...mealPlan.ai_notes_json,
-        title: title || mealPlan.ai_notes_json?.title,
+        ...(mealPlan.ai_notes_json as any),
+        title: title || (mealPlan.ai_notes_json as any)?.title,
       };
 
       await prisma.meals.update({
         where: { id: plan_id },
         data: {
-          ai_notes_json: updatedAiNotes,
+          ai_notes_json: updatedAiNotes as any,
         },
       });
 

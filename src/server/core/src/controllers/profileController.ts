@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "../generated/prisma";
+import { Prisma } from "../generated/prisma";
 import { z } from "zod";
 import { serializeProfile } from "../utils/serialization";
-
-const prisma = new PrismaClient();
+import prisma from "../../prisma/client";
 
 const toNum = (d?: Prisma.Decimal | number | null, def = 0) =>
   d == null ? def : Number(d);
@@ -135,7 +134,6 @@ export class ProfileController {
   static async createProfile(req: Request, res: Response) {
     try {
       const user_id = (req as any).userId as bigint;
-
       // Kiểm tra xem user đã có profile chưa
       const existingProfile = await prisma.profiles.findUnique({
         where: { user_id },
@@ -147,15 +145,12 @@ export class ProfileController {
           existing_profile: serializedExisting,
         });
       }
-
       const p = PostProfileBody.safeParse(req.body);
       if (!p.success) return res.status(400).json({ error: p.error.flatten() });
-
       // Normalize field names (support both formats)
       const height_cm = p.data.height_cm || p.data.height;
       const weight_kg = p.data.weight_kg || p.data.weight;
       const sex = p.data.sex || p.data.gender;
-
       // Validate required fields
       if (!height_cm || !weight_kg || !sex) {
         return res.status(400).json({
@@ -164,15 +159,14 @@ export class ProfileController {
             "height (or height_cm), weight (or weight_kg), and gender (or sex) are required",
         });
       }
-
       const { activity_level, goal, age } = p.data;
       const bmi = calcBMI(height_cm, weight_kg);
       const bmr = calcBMR(sex, age, height_cm, weight_kg);
       const tdee = Math.round(bmr * palFromActivity(activity_level));
-
       const profile = await prisma.profiles.create({
         data: {
           user_id,
+          age, // Thêm age vào data
           height_cm: new Prisma.Decimal(height_cm),
           weight_kg: new Prisma.Decimal(weight_kg),
           sex,
@@ -186,24 +180,10 @@ export class ProfileController {
           tdee: new Prisma.Decimal(tdee),
         },
       });
-
-      console.log("Profile created:", profile);
-      console.log("Profile type:", typeof profile);
-      console.log(
-        "Profile.user_id:",
-        profile?.user_id,
-        "type:",
-        typeof profile?.user_id
-      );
-      console.log("Profile fields:", Object.keys(profile || {}));
-
       if (!profile) {
         return res.status(500).json({ error: "Failed to create profile" });
       }
-
-      // Convert BigInt to string for JSON serialization
       const serializedProfile = serializeProfile(profile);
-
       res.status(201).json({
         message: "Profile created successfully",
         profile: serializedProfile,
@@ -221,12 +201,10 @@ export class ProfileController {
       const user_id = (req as any).userId as bigint;
       const p = PutProfileBody.safeParse(req.body);
       if (!p.success) return res.status(400).json({ error: p.error.flatten() });
-
       // Normalize field names (support both formats)
       const height_cm = p.data.height_cm || p.data.height;
       const weight_kg = p.data.weight_kg || p.data.weight;
       const sex = p.data.sex || p.data.gender;
-
       // Validate required fields
       if (!height_cm || !weight_kg || !sex) {
         return res.status(400).json({
@@ -235,15 +213,14 @@ export class ProfileController {
             "height (or height_cm), weight (or weight_kg), and gender (or sex) are required",
         });
       }
-
-      const { activity_level, goal } = p.data;
+      const { activity_level, goal, age } = p.data;
       const bmi = calcBMI(height_cm, weight_kg);
-      const bmr = calcBMR(sex, p.data.age, height_cm, weight_kg);
+      const bmr = calcBMR(sex, age, height_cm, weight_kg);
       const tdee = Math.round(bmr * palFromActivity(activity_level));
-
       const saved = await prisma.profiles.upsert({
         where: { user_id },
         update: {
+          age, // Thêm age vào update
           height_cm: new Prisma.Decimal(height_cm),
           weight_kg: new Prisma.Decimal(weight_kg),
           sex,
@@ -259,6 +236,7 @@ export class ProfileController {
         },
         create: {
           user_id,
+          age, // Thêm age vào create
           height_cm: new Prisma.Decimal(height_cm),
           weight_kg: new Prisma.Decimal(weight_kg),
           sex,
@@ -272,12 +250,10 @@ export class ProfileController {
           tdee: new Prisma.Decimal(tdee),
         },
       });
-
-      // Convert BigInt to string for JSON serialization
       const serializedSaved = serializeBigInt(saved);
-
       res.json({ profile: serializedSaved, indices: { bmi, bmr, tdee } });
     } catch (error) {
+      console.error("Update profile error:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   }
@@ -351,16 +327,17 @@ export class ProfileController {
       const bmi = Number(profile.bmi);
       const tdee = Number(profile.tdee);
       const bmiAnalysis = getBMICategory(bmi);
-      const targetCalories = getCalorieTarget(profile.goal, tdee);
-      const macroTargets = getMacroTargets(targetCalories, profile.goal);
+      const goal = profile.goal || "maintain"; // Default to maintain if null
+      const targetCalories = getCalorieTarget(goal, tdee);
+      const macroTargets = getMacroTargets(targetCalories, goal);
 
       const insights = {
         health_status: {
           bmi: { value: bmi, ...bmiAnalysis },
           weight_status:
-            profile.goal === "lose"
+            goal === "lose"
               ? "Đang giảm cân"
-              : profile.goal === "gain"
+              : goal === "gain"
               ? "Đang tăng cân"
               : "Duy trì cân nặng",
         },
@@ -372,9 +349,9 @@ export class ProfileController {
         recommendations: [
           bmiAnalysis.message,
           `Mục tiêu ${targetCalories} calories/ngày để ${
-            profile.goal === "lose"
+            goal === "lose"
               ? "giảm cân"
-              : profile.goal === "gain"
+              : goal === "gain"
               ? "tăng cân"
               : "duy trì"
           }`,

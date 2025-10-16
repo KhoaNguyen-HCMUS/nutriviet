@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from "../generated/prisma";
 import { z } from "zod";
 import { serializeBigIntObject } from "../utils/serialization";
 
 // Prisma Client
-const prisma = new PrismaClient();
+import prisma from "../../prisma/client";
 
 // ====== LLM (Gemini) wiring ======
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -552,8 +552,8 @@ export class ChatbotController {
       const responseData = {
         session_info: {
           session_id: session_id.toString(),
-          title: sessionMeta.title || "Nutrition Consultation",
-          context: sessionMeta.context || "general",
+          title: (sessionMeta as any).title || "Nutrition Consultation",
+          context: (sessionMeta as any).context || "general",
           purpose: session.purpose || "nutrition_assistant",
           created_at: session.started_at,
         },

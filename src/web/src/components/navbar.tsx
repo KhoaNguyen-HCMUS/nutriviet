@@ -30,8 +30,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logo} alt="Studium" className="w-8 h-8 rounded-lg" />
-            <span className="font-bold text-xl text-text-header">
-             NUTRIVIET AI
+            <span className="font-bold text-xl text-text-header pr-5">
+             NUTRIVIET    
             </span>
           </Link>
 

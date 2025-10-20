@@ -1,0 +1,93 @@
+[2025-10-20 11:08:58,561][INFO ][node                     ] [Doppelganger] version[2.4.1], pid[2122], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 11:08:58,562][INFO ][node                     ] [Doppelganger] initializing ...
+[2025-10-20 11:09:00,338][INFO ][plugins                  ] [Doppelganger] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 11:09:00,427][INFO ][env                      ] [Doppelganger] using [1] data paths, mounts [[/mnt/d (D:\)]], net usable_space [169.2gb], net total_space [199.9gb], spins? [possibly], types [9p]
+[2025-10-20 11:09:00,427][INFO ][env                      ] [Doppelganger] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 11:09:04,133][INFO ][node                     ] [Doppelganger] initialized
+[2025-10-20 11:09:04,134][INFO ][node                     ] [Doppelganger] starting ...
+[2025-10-20 11:09:04,355][INFO ][transport                ] [Doppelganger] publish_address {10.255.255.254:9300}, bound_addresses {[::1]:9300}, {10.255.255.254:9300}, {127.0.0.1:9300}
+[2025-10-20 11:09:04,381][INFO ][discovery                ] [Doppelganger] elasticsearch/c7-0p_0YRLm2uy6KKmuFDA
+[2025-10-20 11:09:07,514][INFO ][cluster.service          ] [Doppelganger] new_master {Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 11:09:07,546][INFO ][http                     ] [Doppelganger] publish_address {10.255.255.254:9200}, bound_addresses {[::1]:9200}, {10.255.255.254:9200}, {127.0.0.1:9200}
+[2025-10-20 11:09:07,546][INFO ][node                     ] [Doppelganger] started
+[2025-10-20 11:09:07,651][INFO ][gateway                  ] [Doppelganger] recovered [0] indices into cluster_state
+[2025-10-20 11:11:29,714][INFO ][node                     ] [the Tomorrow Man Zarrko] version[2.4.1], pid[2386], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 11:11:29,715][INFO ][node                     ] [the Tomorrow Man Zarrko] initializing ...
+[2025-10-20 11:11:30,981][INFO ][plugins                  ] [the Tomorrow Man Zarrko] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 11:11:31,087][INFO ][env                      ] [the Tomorrow Man Zarrko] using [1] data paths, mounts [[/mnt/d (D:\)]], net usable_space [169.2gb], net total_space [199.9gb], spins? [possibly], types [9p]
+[2025-10-20 11:11:31,088][INFO ][env                      ] [the Tomorrow Man Zarrko] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 11:11:34,824][INFO ][node                     ] [the Tomorrow Man Zarrko] initialized
+[2025-10-20 11:11:34,825][INFO ][node                     ] [the Tomorrow Man Zarrko] starting ...
+[2025-10-20 11:11:35,026][INFO ][transport                ] [the Tomorrow Man Zarrko] publish_address {10.255.255.254:9301}, bound_addresses {[::1]:9301}, {10.255.255.254:9301}, {127.0.0.1:9301}
+[2025-10-20 11:11:35,034][INFO ][discovery                ] [the Tomorrow Man Zarrko] elasticsearch/BQzBJ0A8RGGXivFzU9pnjA
+[2025-10-20 11:11:38,098][INFO ][cluster.service          ] [Doppelganger] added {{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301},}, reason: zen-disco-join(join from node[{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301}])
+[2025-10-20 11:11:38,149][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] detected_master {Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}, added {{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300},}, reason: zen-disco-receive(from master [{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}])
+[2025-10-20 11:11:38,206][INFO ][http                     ] [the Tomorrow Man Zarrko] publish_address {10.255.255.254:9201}, bound_addresses {[::1]:9201}, {10.255.255.254:9201}, {127.0.0.1:9201}
+[2025-10-20 11:11:38,207][INFO ][node                     ] [the Tomorrow Man Zarrko] started
+[2025-10-20 11:17:06,871][INFO ][node                     ] [Doppelganger] stopping ...
+[2025-10-20 11:17:06,902][INFO ][discovery.zen            ] [the Tomorrow Man Zarrko] master_left [{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}], reason [shut_down]
+[2025-10-20 11:17:06,911][WARN ][discovery.zen            ] [the Tomorrow Man Zarrko] master left (reason = shut_down), current nodes: {{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301},}
+[2025-10-20 11:17:06,916][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] removed {{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300},}, reason: zen-disco-master_failed ({Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300})
+[2025-10-20 11:17:06,943][INFO ][node                     ] [Doppelganger] stopped
+[2025-10-20 11:17:06,944][INFO ][node                     ] [Doppelganger] closing ...
+[2025-10-20 11:17:07,016][INFO ][node                     ] [Doppelganger] closed
+[2025-10-20 11:17:09,950][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] new_master {the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 11:23:09,060][INFO ][cluster.metadata         ] [the Tomorrow Man Zarrko] [knowledge] creating index, cause [api], templates [], shards [1]/[0], mappings [sentence]
+[2025-10-20 11:23:09,820][INFO ][cluster.routing.allocation] [the Tomorrow Man Zarrko] Cluster health status changed from [RED] to [GREEN] (reason: [shards started [[knowledge][0]] ...]).
+[2025-10-20 20:11:45,506][INFO ][node                     ] [Shanga] version[2.4.1], pid[35653], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 20:11:45,507][INFO ][node                     ] [Shanga] initializing ...
+[2025-10-20 20:11:45,970][INFO ][plugins                  ] [Shanga] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 20:11:45,992][INFO ][env                      ] [Shanga] using [1] data paths, mounts [[/System/Volumes/Data (/dev/disk3s1)]], net usable_space [65gb], net total_space [926.3gb], spins? [unknown], types [apfs]
+[2025-10-20 20:11:45,992][INFO ][env                      ] [Shanga] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 20:11:45,993][WARN ][env                      ] [Shanga] max file descriptors [10240] for elasticsearch process likely too low, consider increasing to at least [65536]
+[2025-10-20 20:11:47,250][INFO ][node                     ] [Shanga] initialized
+[2025-10-20 20:11:47,250][INFO ][node                     ] [Shanga] starting ...
+[2025-10-20 20:11:47,365][INFO ][transport                ] [Shanga] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2025-10-20 20:11:47,369][INFO ][discovery                ] [Shanga] elasticsearch/U_s3ghJASvCkiETe45N6xg
+[2025-10-20 20:11:50,450][INFO ][cluster.service          ] [Shanga] new_master {Shanga}{U_s3ghJASvCkiETe45N6xg}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 20:11:50,538][INFO ][http                     ] [Shanga] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2025-10-20 20:11:50,546][INFO ][node                     ] [Shanga] started
+[2025-10-20 20:11:50,603][INFO ][gateway                  ] [Shanga] recovered [1] indices into cluster_state
+[2025-10-20 20:11:50,945][INFO ][cluster.routing.allocation] [Shanga] Cluster health status changed from [RED] to [GREEN] (reason: [shards started [[knowledge][0]] ...]).
+[2025-10-20 20:12:03,102][INFO ][node                     ] [Shanga] stopping ...
+[2025-10-20 20:12:03,206][INFO ][node                     ] [Shanga] stopped
+[2025-10-20 20:12:03,207][INFO ][node                     ] [Shanga] closing ...
+[2025-10-20 20:12:03,214][INFO ][node                     ] [Shanga] closed
+[2025-10-20 20:12:06,878][INFO ][node                     ] [Star-Lord] version[2.4.1], pid[35703], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 20:12:06,879][INFO ][node                     ] [Star-Lord] initializing ...
+[2025-10-20 20:12:07,321][INFO ][plugins                  ] [Star-Lord] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 20:12:07,340][INFO ][env                      ] [Star-Lord] using [1] data paths, mounts [[/System/Volumes/Data (/dev/disk3s1)]], net usable_space [65gb], net total_space [926.3gb], spins? [unknown], types [apfs]
+[2025-10-20 20:12:07,340][INFO ][env                      ] [Star-Lord] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 20:12:07,341][WARN ][env                      ] [Star-Lord] max file descriptors [10240] for elasticsearch process likely too low, consider increasing to at least [65536]
+[2025-10-20 20:12:08,490][INFO ][node                     ] [Star-Lord] initialized
+[2025-10-20 20:12:08,490][INFO ][node                     ] [Star-Lord] starting ...
+[2025-10-20 20:12:08,590][INFO ][transport                ] [Star-Lord] publish_address {127.0.0.1:9300}, bound_addresses {[fe80::1]:9300}, {[::1]:9300}, {127.0.0.1:9300}
+[2025-10-20 20:12:08,594][INFO ][discovery                ] [Star-Lord] elasticsearch/xfGUkYRjTvWFl9akZFAKAw
+[2025-10-20 20:12:11,697][INFO ][cluster.service          ] [Star-Lord] new_master {Star-Lord}{xfGUkYRjTvWFl9akZFAKAw}{127.0.0.1}{127.0.0.1:9300}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 20:12:11,771][INFO ][http                     ] [Star-Lord] publish_address {127.0.0.1:9200}, bound_addresses {[fe80::1]:9200}, {[::1]:9200}, {127.0.0.1:9200}
+[2025-10-20 20:12:11,773][INFO ][node                     ] [Star-Lord] started
+[2025-10-20 20:12:11,807][INFO ][gateway                  ] [Star-Lord] recovered [1] indices into cluster_state
+[2025-10-20 20:12:12,139][INFO ][cluster.routing.allocation] [Star-Lord] Cluster health status changed from [RED] to [GREEN] (reason: [shards started [[knowledge][0]] ...]).
+[2025-10-20 20:12:41,740][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 65gb[7%], shards will be relocated away from this node
+[2025-10-20 20:12:41,742][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:13:11,778][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 65gb[7%], shards will be relocated away from this node
+[2025-10-20 20:13:41,798][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:13:41,800][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:14:11,829][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:14:41,846][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:14:41,847][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:15:11,864][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:15:41,878][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:15:41,879][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:16:11,894][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:16:41,921][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:16:41,923][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:17:12,005][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:17:42,021][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:17:42,024][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:18:12,034][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:18:42,044][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:18:42,045][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]
+[2025-10-20 20:19:12,060][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 64gb[6.9%], shards will be relocated away from this node
+[2025-10-20 20:19:42,068][WARN ][cluster.routing.allocation.decider] [Star-Lord] high disk watermark [90%] exceeded on [xfGUkYRjTvWFl9akZFAKAw][Star-Lord][/Users/macos/Documents/nutriviet/data/IR/elasticsearch-2.4.1/data/elasticsearch/nodes/0] free: 63.8gb[6.8%], shards will be relocated away from this node
+[2025-10-20 20:19:42,068][INFO ][cluster.routing.allocation.decider] [Star-Lord] rerouting shards: [high disk watermark exceeded on one or more nodes]

@@ -1,11 +1,6 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import ChatContainer from '../components/chat/chatContainer';
-import { isAuthenticated } from '../utils/authStorage'; // ✅ 1. Import hàm kiểm tra xác thực
-
 const HealthAssistant: React.FC = () => {
-  const navigate = useNavigate();
-  const isAuth = isAuthenticated();
 
 
   return (

@@ -21,6 +21,9 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
   isOpen = true,
   onClose,
 }) => {
+
+  console.log('Rendering SessionSidebar wi  th sessions:', sessions);
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -55,7 +58,7 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
           {/* New Chat Button */}
           <div className='p-4 border-b border-border-light bg-bg'>
             <button
-              onClick={onNewSession}
+              onClick={() => { onNewSession(); if (onClose) onClose(); }}
               className='w-full flex items-center justify-center space-x-2 px-4 py-3 bg-primary text-primary-contrast rounded-lg hover:bg-primary-hover transition-colors duration-200 shadow-sm hover:shadow-md'
             >
               <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>

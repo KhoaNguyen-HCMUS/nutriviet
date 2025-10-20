@@ -6,7 +6,7 @@ import ChatHeader from './chatHeader';
 import MessageList from './messageList';
 import MessageInput from './messageInput';
 import SessionSidebar from './sessionSidebar';
-import ChatWelcome from './chatWelcome';
+
 
 const ChatContainer: React.FC = () => {
   // State Management
@@ -40,9 +40,9 @@ const ChatContainer: React.FC = () => {
       setSessions(response.data);
 
       // Auto-select most recent session if available
-      if (response.data.length > 0) {
-        setCurrentSession(response.data[0]);
-      }
+      // if (response.data.length > 0) {
+      //   setCurrentSession(response.data[0]);
+      // }
     } catch (error) {
       console.error('Failed to load sessions:', error);
       setError('Không thể tải danh sách phiên trò chuyện');
@@ -90,9 +90,12 @@ const ChatContainer: React.FC = () => {
       setCurrentSession(newSession);
       setMessages([]);
       setError(null);
+
+      return newSession;
     } catch (error) {
       console.error('Failed to create session:', error);
       setError('Không thể tạo phiên trò chuyện mới');
+      return null
     } finally {
       setIsLoading(false);
     }
@@ -100,15 +103,20 @@ const ChatContainer: React.FC = () => {
 
   // Send message
   const sendMessage = async (content: string) => {
-    if (!currentSession) {
-      await createNewSession();
-      // Wait for session to be created, then send message
-      setTimeout(() => sendMessage(content), 500);
-      return;
-    }
-
+    
     try {
+      // Prevent sending if already loading
+      if(isLoading) return;
+
       setIsLoading(true);
+      
+      let session = currentSession;
+      if (!session) {
+        session = await createNewSession();
+        if (!session) return; // tạo lỗi thì dừng
+      }
+
+      const sessionId = session.session_id;
 
       // Add user message to UI immediately
       const userMessage: ChatMessage = {
@@ -121,12 +129,20 @@ const ChatContainer: React.FC = () => {
 
       // Send to backend
       const response = await ChatService.sendMessage({
-        session_id: currentSession.session_id,
+        session_id: sessionId,
         content,
       });
 
       // Replace messages with response from backend
-      setMessages(response.data.messages);
+      if (Array.isArray(response.data.messages)) {
+        const newMessages = response.data.messages;
+      
+        if (newMessages.length === 1) {
+          setMessages(prev => [...prev, ...newMessages]); 
+        } else {
+          setMessages(newMessages); 
+        }
+      }
 
       // Scroll to bottom
       ChatUtils.scrollToBottom('messages-container');
@@ -199,29 +215,25 @@ const ChatContainer: React.FC = () => {
 
         {/* Chat Content */}
         <div className='flex-1 flex flex-col overflow-hidden relative'>
-          {!currentSession && !isLoadingSessions ? (
-            <ChatWelcome onStartChat={createNewSession} />
-          ) : (
-            <>
-              {/* Messages */}
-              <div id='messages-container' className='flex-1 overflow-hidden relative'>
-                <MessageList
-                  messages={messages}
-                  isLoading={isLoading && messages.length > 0}
-                  className='absolute inset-0'
-                />
-              </div>
+          <>
+            {/* Messages */}
+            <div id='messages-container' className='flex-1 overflow-hidden relative'>
+              <MessageList
+                messages={messages}
+                isLoading={isLoading && messages.length > 0}
+                className='absolute inset-0'
+              />
+            </div>
 
-              {/* Message Input */}
-              <div className='w-full bg-bg-card shadow-md z-10'>
-                <MessageInput
-                  onSendMessage={sendMessage}
-                  disabled={isLoading}
-                  placeholder={currentSession ? 'Nhập câu hỏi về sức khỏe...' : 'Đang tạo phiên mới...'}
-                />
-              </div>
-            </>
-          )}
+            {/* Message Input */}
+            <div className='w-full bg-bg-card shadow-md z-10'>
+              <MessageInput
+                onSendMessage={sendMessage}
+                disabled={isLoading}
+                placeholder={currentSession ? 'Nhập câu hỏi về sức khỏe...' : 'Đang tạo phiên mới...'}
+              />
+            </div>
+          </>
         </div>
       </div>
     </div>

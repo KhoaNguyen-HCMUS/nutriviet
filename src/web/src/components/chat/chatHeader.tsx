@@ -13,15 +13,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   currentSession, 
   onNewChat,
   onToggleSidebar,
-  messagesCount = 0
 }) => {
-  const sessionTitle = currentSession 
-    ? `Phiên ${currentSession.id}` 
-    : 'Chưa có phiên trò chuyện';
 
-  const sessionTime = currentSession 
-    ? ChatUtils.formatMessageTime(currentSession.started_at)
-    : '';
 
   return (
     <div className="bg-white border-b border-gray-200 px-4 py-3">
@@ -54,19 +47,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
               <div className="font-medium text-gray-900">Trợ lý Y khoa AI</div>
               <div className="text-sm text-gray-500 flex items-center space-x-2">
                 <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                <span>Đang trực tuyến</span>
-                {currentSession && (
-                  <>
-                    <span>•</span>
-                    <span>{messagesCount} tin nhắn</span>
-                    {sessionTime && (
-                      <>
-                        <span>•</span>
-                        <span>{sessionTime}</span>
-                      </>
-                    )}
-                  </>
-                )}
+                <span className='text-[8px] md:text-xs'>Đang trực tuyến</span>
               </div>
             </div>
           </div>
@@ -74,15 +55,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
         {/* Right: Actions */}
         <div className="flex items-center space-x-2">
-          {/* Session Info */}
-          {currentSession && (
-            <div className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-gray-100 rounded-lg text-sm text-gray-600">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <span>Phiên {currentSession.id}</span>
-            </div>
-          )}
 
           {/* New Chat Button */}
           <button

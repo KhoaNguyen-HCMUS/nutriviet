@@ -15,7 +15,7 @@ const TypingIndicator: React.FC = () => {
             <div className='w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce bounce-delay-2'></div>
             <div className='w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce bounce-delay-3'></div>
           </div>
-          <div className='text-sm text-gray-600 mt-2 font-medium'>Trợ lý AI đang soạn trả lời...</div>
+          <div className='text-sm text-gray-600 mt-2 font-medium'>Trợ lý AI...</div>
         </div>
       </div>
     </div>

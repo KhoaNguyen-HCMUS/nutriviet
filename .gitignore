@@ -4,3 +4,4 @@ server/ml/.venv/
 __pycache__/
 dist
 .venv
+.DS_Store

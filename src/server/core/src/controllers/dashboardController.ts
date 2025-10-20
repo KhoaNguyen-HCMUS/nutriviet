@@ -1,12 +1,15 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { Prisma } from "../generated/prisma";
 import prisma from "../../prisma/client";
+import NodeCache from "node-cache";
 
 const toNum = (d?: Prisma.Decimal | number | null, def = 0) =>
   d == null ? def : Number(d);
 
+// NodeCache instance for dashboard responses (30 min TTL)
+const dashboardCache = new NodeCache({ stdTTL: 30 * 60 });
+
 export class DashboardController {
-  // GET /dashboard
   static async getDashboard(req: Request, res: Response) {
     try {
       const user_id = (req as any).userId as bigint;
@@ -23,6 +26,13 @@ export class DashboardController {
         });
       }
 
+      // Check cache
+      const cacheKey = user_id.toString();
+      const cached = dashboardCache.get(cacheKey);
+      if (cached) {
+        console.log(`[Dashboard] Using node-cache for user ${cacheKey}`);
+        return res.json(cached);
+      }
       // Calculate date ranges
       const now = new Date();
       const todayStart = new Date(now);
@@ -322,6 +332,7 @@ export class DashboardController {
         },
       };
 
+      dashboardCache.set(cacheKey, response);
       return res.json(response);
     } catch (error) {
       console.error("❌ Dashboard error:", error);

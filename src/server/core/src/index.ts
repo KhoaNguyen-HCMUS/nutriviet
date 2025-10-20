@@ -8,6 +8,7 @@ import nutritionRoutes from "./routes/nutrition";
 import authRoutes from "./routes/auth";
 import chatRoutes from "./routes/chat";
 import foodRoutes from "./routes/food";
+import dashboardRoutes from "./routes/dashboard";
 
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
@@ -23,6 +24,7 @@ app.use("/api", nutritionRoutes);
 
 app.use("/api/chat", chatRoutes);
 app.use("/api/food", foodRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 

@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-bg border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logo} alt="Studium" className="w-8 h-8 rounded-lg" />
@@ -111,7 +111,7 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border-light">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="flex flex-col px-2 pt-2 pb-3 space-y-1">
               {isAuth && navItems.map((item) => (
                 <Link
                   key={item.path}

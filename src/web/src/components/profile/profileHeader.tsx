@@ -21,7 +21,7 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   return (
     <div className="bg-bg-card rounded-lg shadow-md p-6 mb-6 border-l-4 border-primary">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center space-x-4">
           {/* Avatar */}
           <div className="w-16 h-16 bg-linear-(--gradient-primary) rounded-full flex items-center justify-center shadow-lg">
@@ -30,11 +30,10 @@ export default function ProfileHeader({
           
           {/* User Info */}
           <div>
-            <h1 className="text-2xl font-bold text-text-header">
+            <h1 className="text-xl md:text-3xl font-bold text-text-header">
               {userName || 'User Profile'}
             </h1>
-            <p className="text-text-body">{userEmail}</p>
-            
+
             {/* Consent Status */}
             <div className="flex items-center mt-2">
               <span className="text-sm text-text-muted mr-2">Consent:</span>
@@ -60,7 +59,7 @@ export default function ProfileHeader({
         </div>
         
         {/* Action Buttons */}
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 pt-3 md:pt-0">
           {isEditing ? (
             <>
               <button
@@ -68,14 +67,14 @@ export default function ProfileHeader({
                 className="inline-flex items-center px-6 py-3 bg-success text-success-foreground text-sm font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 <FaSave className="mr-2" />
-                Save Changes
+                <p className='text-[12px]'>Save Changes</p>
               </button>
               <button
                 onClick={onCancel}
                 className="inline-flex items-center px-6 py-3 bg-button-ghost-bg text-button-ghost-text border border-border-light hover:bg-button-ghost-hover text-sm font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 <FaTimes className="mr-2" />
-                Cancel
+               <p className='text-[12px]'>Cancel</p>
               </button>
             </>
           ) : (

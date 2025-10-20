@@ -114,17 +114,17 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
         <div className='p-2 bg-primary rounded-lg mr-3'>
           <FaUser className='text-primary-contrast text-xl' />
         </div>
-        <h2 className='text-xl font-semibold text-text-header'>Health Information</h2>
+        <h2 className='text-xl font-semibold text-text-header'>Thông tin sức khỏe</h2>
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <div className='space-y-4'>
           <div className='flex items-center mb-4'>
-            <h3 className='text-lg font-medium text-text-header'>Personal Information</h3>
+            <h3 className='text-lg font-medium text-text-header'>Thông tin cá nhân</h3>
           </div>
 
           <div>
-            <label className='flex items-center text-sm font-medium text-text-body mb-2'>Age</label>
+            <label className='flex items-center text-sm font-medium text-text-body mb-2'>Tuổi</label>
             <input
               type='number'
               min='1'
@@ -134,14 +134,14 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
               onChange={(e) => handleInputChange('personalInfo.age', parseInt(e.target.value || '0', 10))}
               disabled={!isEditing}
               className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
-              placeholder='Enter age'
+              placeholder='Nhập tuổi'
             />
           </div>
 
           <div>
             <label className='flex items-center text-sm font-medium text-text-body mb-2'>
               <FaVenusMars className='mr-2 text-secondary' />
-              Gender
+              Giới tính
             </label>
             <select
               value={formData.personalInfo?.gender || ''}
@@ -150,16 +150,16 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
               className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
               aria-label='Select gender'
             >
-              <option value=''>Select gender</option>
-              <option value='male'>Male</option>
-              <option value='female'>Female</option>
+              <option value=''>Chọn giới tính</option>
+              <option value='male'>Nam</option>
+              <option value='female'>Nữ</option>
             </select>
           </div>
 
           <div>
             <label className='flex items-center text-sm font-medium text-text-body mb-2'>
               <FaRuler className='mr-2 text-primary' />
-              Height
+              Chiều cao
             </label>
             <div className='flex space-x-2'>
               <input
@@ -171,7 +171,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
                 onChange={(e) => handleInputChange('personalInfo.height', parseFloat(e.target.value) || 0)}
                 disabled={!isEditing}
                 className='flex-1 px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
-                placeholder='Enter height'
+                placeholder='Nhập chiều cao'
               />
               <input
                 type='text'
@@ -179,7 +179,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
                 onChange={(e) => handleUnitChange('height', e.target.value)}
                 disabled={!isEditing}
                 className='px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted  transition-colors'
-                placeholder='Unit (cm, in, ft)'
+                placeholder='Đơn vị (cm, in, ft)'
               />
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
           <div>
             <label className='flex items-center text-sm font-medium text-text-body mb-2'>
               <FaWeight className='mr-2 text-warning' />
-              Weight
+              Cân nặng
             </label>
             <div className='flex space-x-2'>
               <input
@@ -199,7 +199,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
                 onChange={(e) => handleInputChange('personalInfo.weight', parseFloat(e.target.value) || 0)}
                 disabled={!isEditing}
                 className='flex-1 px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
-                placeholder='Enter weight'
+                placeholder='Nhập cân nặng'
               />
               <input
                 type='text'
@@ -207,7 +207,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
                 onChange={(e) => handleUnitChange('weight', e.target.value)}
                 disabled={!isEditing}
                 className='px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
-                placeholder='Unit (kg, lb, stones)'
+                placeholder='Đơn vị (kg, lb, stones)'
               />
             </div>
           </div>
@@ -215,13 +215,13 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
 
         <div className='space-y-4'>
           <div className='flex items-center mb-4'>
-            <h3 className='text-lg font-medium text-text-header'>Goals & Activity</h3>
+            <h3 className='text-lg font-medium text-text-header'>Mục tiêu & Hoạt động</h3>
           </div>
 
           <div>
             <label className='flex items-center text-sm font-medium text-text-body mb-2'>
               <FaHeart className='mr-2 text-warning' />
-              Primary Goal
+              Mục tiêu chính
             </label>
             <select
               value={formData.goals?.primary || ''}
@@ -230,10 +230,10 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
               className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
               aria-label='Select primary health goal'
             >
-              <option value=''>Select goal</option>
-              <option value='lose'>Lose Weight</option>
-              <option value='maintain'>Maintain Weight</option>
-              <option value='gain'>Gain Weight</option>
+              <option value=''>Chọn mục tiêu</option>
+              <option value='lose'>Giảm cân</option>
+              <option value='maintain'>Duy trì cân nặng</option>
+              <option value='gain'>Tăng cân</option>
             </select>
           </div>
 
@@ -241,7 +241,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
           <div>
             <label className='flex items-center text-sm font-medium text-text-body mb-2'>
               <FaRunning className='mr-2 text-success' />
-              Activity Level
+              Mức độ hoạt động
             </label>
             <select
               value={formData.activityLevel || ''}
@@ -250,7 +250,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
               className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors'
               aria-label='Select activity level'
             >
-              <option value=''>Select activity level</option>
+              <option value=''>Chọn mức độ hoạt động</option>
               {activityLevels.map((level) => (
                 <option key={level.value} value={level.value}>
                   {level.label} - {level.description}
@@ -267,7 +267,7 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
           <div className='p-2 bg-error rounded-lg mr-3'>
             <FaHeartbeat className='text-error-foreground text-lg' />
           </div>
-          <h3 className='text-lg font-medium text-text-header'>Medical Information</h3>
+          <h3 className='text-lg font-medium text-text-header'>Thông tin y tế</h3>
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -276,14 +276,14 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
             <div>
               <label className='flex items-center text-sm font-medium text-text-body mb-3'>
                 <FaHeartbeat className='mr-2 text-error' />
-                Health Conditions
+                Tình trạng sức khỏe
               </label>
               <textarea
                 value={formData.medicalInfo?.conditions || ''}
                 onChange={(e) => handleInputChange('medicalInfo.conditions', e.target.value)}
                 disabled={!isEditing}
                 className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors resize-none'
-                placeholder='Enter any health conditions (e.g., Diabetes, Hypertension, etc.)'
+                placeholder='Nhập tình trạng sức khỏe (VD: Tiểu đường, Cao huyết áp, v.v.)'
                 rows={4}
               />
             </div>
@@ -292,14 +292,14 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
             <div>
               <label className='flex items-center text-sm font-medium text-text-body mb-3'>
                 <FaAllergies className='mr-2 text-warning' />
-                Allergies
+                Dị ứng
               </label>
               <textarea
                 value={formData.medicalInfo?.allergies || ''}
                 onChange={(e) => handleInputChange('medicalInfo.allergies', e.target.value)}
                 disabled={!isEditing}
                 className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors resize-none'
-                placeholder='Enter any allergies (e.g., Nuts, Dairy, Gluten, etc.)'
+                placeholder='Nhập dị ứng (VD: Hạt, Sữa, Gluten, v.v.)'
                 rows={4}
               />
             </div>
@@ -310,14 +310,14 @@ export default function HealthForm({ profile, isEditing, consentGranted, onChang
             <div>
               <label className='flex items-center text-sm font-medium text-text-body mb-3'>
                 <FaUtensils className='mr-2 text-success' />
-                Dietary Preferences
+                Sở thích ăn uống
               </label>
               <textarea
                 value={formData.medicalInfo?.preferences || ''}
                 onChange={(e) => handleInputChange('medicalInfo.preferences', e.target.value)}
                 disabled={!isEditing}
                 className='w-full px-4 py-3 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body disabled:bg-bg-muted transition-colors resize-none'
-                placeholder='Enter dietary preferences (e.g., Vegetarian, Low-sodium, etc.)'
+                placeholder='Nhập sở thích ăn uống (VD: Ăn chay, Ít muối, v.v.)'
                 rows={4}
               />
             </div>

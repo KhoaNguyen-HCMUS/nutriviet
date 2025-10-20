@@ -44,7 +44,7 @@ export default function ProfileFooter({
               }`}
             >
               <FaSave className='mr-3' />
-              {isSaving ? 'Saving...' : 'Save Profile'}
+              {isSaving ? 'Đang lưu...' : 'Lưu hồ sơ'}
             </button>
 
             <button
@@ -52,14 +52,14 @@ export default function ProfileFooter({
               disabled={isSaving}
               className='inline-flex items-center px-8 py-4 bg-button-ghost-bg text-button-ghost-text border border-border-light hover:bg-button-ghost-hover rounded-lg font-medium transition-all duration-200 shadow-lg transform hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
             >
-              Cancel
+              Hủy
             </button>
           </div>
 
           {hasChanges && (
             <div className='flex items-center text-warning-foreground bg-warning-bg px-4 py-2 rounded-lg border border-warning-border'>
               <FaExclamationTriangle className='mr-2 text-warning' />
-              <span className='text-sm font-medium'>Unsaved changes</span>
+              <span className='text-sm font-medium'>Thay đổi chưa lưu</span>
             </div>
           )}
         </div>
@@ -70,7 +70,7 @@ export default function ProfileFooter({
         <div className='flex items-center justify-between mb-6'>
           <div className='flex items-center text-text-body bg-bg-muted px-4 py-2 rounded-lg border border-border-light'>
             <FaClock className='mr-2 text-info' />
-            <span className='text-sm font-medium'>Last saved: {formatLastSaved(lastSaved)}</span>
+            <span className='text-sm font-medium'>Lần lưu cuối: {formatLastSaved(lastSaved)}</span>
           </div>
         </div>
       )}
@@ -84,11 +84,10 @@ export default function ProfileFooter({
             </div>
           </div>
           <div className='ml-4'>
-            <h4 className='text-lg font-semibold text-text-header mb-2'>Profile Update Impact</h4>
+            <h4 className='text-lg font-semibold text-text-header mb-2'>Tác động cập nhật hồ sơ</h4>
             <p className='text-sm text-text-body leading-relaxed'>
-              Updating your health profile will automatically recalculate your meal plans and nutritional
-              recommendations. This ensures your dietary guidance stays aligned with your current health status and
-              goals.
+              Cập nhật hồ sơ sức khỏe sẽ tự động tính lại kế hoạch bữa ăn và khuyến nghị dinh dưỡng. Điều này đảm bảo
+              hướng dẫn ăn uống luôn phù hợp với tình trạng sức khỏe và mục tiêu hiện tại.
             </p>
           </div>
         </div>
@@ -99,8 +98,8 @@ export default function ProfileFooter({
         <div className='flex items-start'>
           <FaInfoCircle className='h-4 w-4 text-text-muted mt-0.5 mr-2 flex-shrink-0' />
           <p className='text-xs text-text-muted leading-relaxed'>
-            <strong>Note:</strong> All health calculations are estimates based on standard formulas. For personalized
-            medical advice, please consult with a healthcare professional.
+            <strong>Lưu ý:</strong> Tất cả tính toán sức khỏe đều là ước tính dựa trên công thức chuẩn. Để được tư vấn y
+            tế cá nhân hóa, vui lòng tham khảo ý kiến chuyên gia y tế.
           </p>
         </div>
       </div>

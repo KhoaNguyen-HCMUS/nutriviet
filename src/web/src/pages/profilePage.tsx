@@ -157,12 +157,12 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  const getBmiCategory = (bmi: number): 'underweight' | 'normal' | 'overweight' | 'obese' => {
-    if (isNaN(bmi) || bmi === 0) return 'normal'; // Default if invalid
-    if (bmi < 18.5) return 'underweight';
-    if (bmi < 25) return 'normal';
-    if (bmi < 30) return 'overweight';
-    return 'obese';
+  const getBmiCategory = (bmi: number): 'Thiếu cân' | 'Bình thường' | 'Thừa cân' | 'Béo phì' => {
+    if (isNaN(bmi) || bmi === 0) return 'Bình thường'; // Default if invalid
+    if (bmi < 18.5) return 'Thiếu cân';
+    if (bmi < 25) return 'Bình thường';
+    if (bmi < 30) return 'Thừa cân';
+    return 'Béo phì';
   };
 
   useEffect(() => {
@@ -192,7 +192,7 @@ export default function ProfilePage() {
     const validation = validateHealthProfile(profile);
 
     if (!validation.isValid) {
-      toast.error('Please fix validation errors before saving');
+      toast.error('Hãy sửa các lỗi trong biểu mẫu trước khi lưu.');
       setValidationErrors(validation.errors);
       return;
     }
@@ -323,15 +323,15 @@ export default function ProfilePage() {
     setHasChanges(false);
     setIsEditing(false);
     setValidationErrors([]);
-    toast.info('Changes cancelled');
+    toast.info('Thay đổi đã bị hủy bỏ.');
   };
 
   return (
     <div className='min-h-screen bg-linear-(--gradient-primary) py-8'>
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='mb-8'>
-          <h1 className='text-3xl font-bold text-text-header'>Health Profile</h1>
-          <p className='mt-2 text-text-body'>Manage your health information and track your nutritional goals</p>
+          <h1 className='text-3xl font-bold text-text-header'>Hồ sơ sức khỏe</h1>
+          <p className='mt-2 text-text-body'>Quản lý thông tin sức khỏe của bạn và theo dõi mục tiêu dinh dưỡng</p>
         </div>
 
         {isLoading ? (

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { HealthProfile } from '../../types/health';
-import { generateMealPlan, type MealPlanRequestBody, type MealPlanPreferences, type MealPlanResponseData } from '../../services/mealPlan';
+import {
+  generateMealPlan,
+  type MealPlanRequestBody,
+  type MealPlanPreferences,
+  type MealPlanResponseData,
+} from '../../services/mealPlan';
 import { FaCalendarAlt, FaUtensils, FaCheckCircle, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 import { FaStopwatch, FaLeaf, FaBowlFood } from 'react-icons/fa6';
 
@@ -13,11 +18,11 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
   const [title, setTitle] = useState<string>('Kế hoạch giảm cân tuần 1');
   const [duration, setDuration] = useState<'weekly' | 'monthly'>('weekly');
   const [focus, setFocus] = useState<'weight_loss' | 'muscle_gain' | 'maintenance'>('weight_loss');
-  const [excludeIngredients, setExcludeIngredients] = useState<string>('');
+  const [excludeIngredients, setExcludeIngredients] = useState<string>('Không');
   const [preferredCuisines, setPreferredCuisines] = useState<string[]>(['Vietnamese', 'Asian']);
   const [cookingTime, setCookingTime] = useState<'quick' | 'moderate' | 'elaborate'>('quick');
   const [mealFrequency, setMealFrequency] = useState<number>(3);
-  
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -30,31 +35,27 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
 
   // Update title when focus or duration changes
   useEffect(() => {
-    const focusText = focus === 'weight_loss' 
-      ? 'Weight Loss' 
-      : focus === 'muscle_gain' 
-        ? 'Muscle Gain' 
-        : 'Maintenance';
-    const durationText = duration === 'weekly' ? 'Week' : 'Month';
-    
-    setTitle(`${focusText} Plan ${durationText} 1`);
+    const focusText = focus === 'weight_loss' ? 'Giảm cân' : focus === 'muscle_gain' ? 'Tăng cơ' : 'Duy trì';
+    const durationText = duration === 'weekly' ? 'Tuần' : 'Tháng';
+
+    setTitle(`${focusText} ${durationText} 1`);
   }, [focus, duration]);
 
   const validateForm = (): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
-    
+
     if (!title.trim()) {
-      errors.push('Title cannot be empty');
+      errors.push('Tiêu đề không được để trống');
     }
-    
+
     if (title.length > 255) {
-      errors.push('Title cannot exceed 255 characters');
+      errors.push('Tiêu đề không vượt quá 255 ký tự');
     }
-    
+
     if (mealFrequency < 2 || mealFrequency > 6) {
-      errors.push('Meals per day must be between 2 and 6');
+      errors.push('Số bữa mỗi ngày phải từ 2 đến 6');
     }
-    
+
     return { isValid: errors.length === 0, errors };
   };
 
@@ -72,8 +73,8 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
       // Parse excluded ingredients to array
       const excludeIngredientsArray = excludeIngredients
         .split(',')
-        .map(item => item.trim())
-        .filter(item => item.length > 0);
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
 
       // Create request body
       const preferences: MealPlanPreferences = {
@@ -81,13 +82,13 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
         exclude_ingredients: excludeIngredientsArray,
         preferred_cuisines: preferredCuisines,
         cooking_time: cookingTime,
-        meal_frequency: mealFrequency
+        meal_frequency: mealFrequency,
       };
 
       const requestBody: MealPlanRequestBody = {
         duration,
         title,
-        preferences
+        preferences,
       };
 
       // Call API
@@ -96,49 +97,45 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
       if (response.success) {
         onMealPlanGenerated(response.data);
       } else {
-        setErrors([response.message || 'Failed to generate meal plan']);
+        setErrors([response.message || 'Tạo kế hoạch bữa ăn thất bại']);
       }
     } catch (error) {
       console.error('Error generating meal plan:', error);
-      setErrors(['An error occurred while generating the meal plan. Please try again later.']);
+      setErrors(['Có lỗi xảy ra khi tạo kế hoạch bữa ăn. Vui lòng thử lại sau.']);
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="bg-bg-card rounded-lg shadow-md p-6 mb-6">
-      <div className="flex items-center mb-6">
-        <div className="p-2 bg-primary rounded-lg mr-3">
-          <FaUtensils className="text-primary-contrast text-xl" />
+    <div className='bg-bg-card rounded-lg shadow-md p-6 mb-6'>
+      <div className='flex items-center mb-6'>
+        <div className='p-2 bg-primary rounded-lg mr-3'>
+          <FaUtensils className='text-primary-contrast text-xl' />
         </div>
-        <h2 className="text-xl font-semibold text-text-header">
-          Create Meal Plan
-        </h2>
+        <h2 className='text-xl font-semibold text-text-header'>Tạo kế hoạch bữa ăn</h2>
       </div>
 
       {/* Basic Information */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-text-body mb-2">
-          Title
-        </label>
+      <div className='mb-6'>
+        <label className='block text-sm font-medium text-text-body mb-2'>Tiêu đề</label>
         <input
-          type="text"
+          type='text'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={isGenerating}
-          className="w-full px-4 py-2.5 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body"
-          placeholder="Enter meal plan title"
+          className='w-full px-4 py-2.5 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body'
+          placeholder='Nhập tiêu đề kế hoạch bữa ăn'
         />
       </div>
 
       {/* Duration Selection */}
-      <div className="mb-6">
-        <label className="flex items-center text-sm font-medium text-text-body mb-3">
-          <FaCalendarAlt className="mr-2 text-primary" />
-          Plan Duration
+      <div className='mb-6'>
+        <label className='flex items-center text-sm font-medium text-text-body mb-3'>
+          <FaCalendarAlt className='mr-2 text-primary' />
+          Thời hạn
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className='grid grid-cols-2 gap-4'>
           <button
             onClick={() => setDuration('weekly')}
             disabled={isGenerating}
@@ -148,9 +145,9 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-primary/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-2xl font-bold mb-1">7</div>
-              <div className="text-sm">Days</div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold mb-1'>7</div>
+              <div className='text-sm'>Ngày</div>
             </div>
           </button>
           <button
@@ -162,21 +159,21 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-primary/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-2xl font-bold mb-1">30</div>
-              <div className="text-sm">Days</div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold mb-1'>30</div>
+              <div className='text-sm'>Ngày</div>
             </div>
           </button>
         </div>
       </div>
-      
+
       {/* Focus Selection */}
-      <div className="mb-6">
-        <label className="flex items-center text-sm font-medium text-text-body mb-3">
-          <FaLeaf className="mr-2 text-success" />
-          Goal
+      <div className='mb-6'>
+        <label className='flex items-center text-sm font-medium text-text-body mb-3'>
+          <FaLeaf className='mr-2 text-success' />
+          Mục tiêu
         </label>
-        <div className="grid grid-cols-3 gap-3">
+        <div className='grid grid-cols-3 gap-3'>
           <button
             onClick={() => setFocus('weight_loss')}
             disabled={isGenerating}
@@ -186,8 +183,8 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-success/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Weight Loss</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Giảm cân</div>
             </div>
           </button>
           <button
@@ -199,8 +196,8 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-warning/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Muscle Gain</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Tăng cơ</div>
             </div>
           </button>
           <button
@@ -212,45 +209,45 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-info/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Maintenance</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Duy trì</div>
             </div>
           </button>
         </div>
       </div>
 
       {/* Excluded Ingredients */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-text-body mb-2">
-          Excluded Ingredients (comma separated)
+      <div className='mb-6'>
+        <label className='block text-sm font-medium text-text-body mb-2'>
+          Thành phần cần loại trừ (phân tách bằng dấu phẩy)
         </label>
         <input
-          type="text"
+          type='text'
           value={excludeIngredients}
           onChange={(e) => setExcludeIngredients(e.target.value)}
           disabled={isGenerating}
-          className="w-full px-4 py-2.5 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body"
-          placeholder="Example: peanuts, milk, seafood..."
+          className='w-full px-4 py-2.5 border border-border-light rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-bg text-text-body'
+          placeholder='Ví dụ: đậu phộng, sữa, hải sản...'
         />
       </div>
 
       {/* Preferred Cuisine */}
-      <div className="mb-6">
-        <label className="flex items-center text-sm font-medium text-text-body mb-3">
-          <FaUtensils className="mr-2 text-primary" />
-          Preferred Cuisines
+      <div className='mb-6'>
+        <label className='flex items-center text-sm font-medium text-text-body mb-3'>
+          <FaUtensils className='mr-2 text-primary' />
+          Ẩm thực ưa thích
         </label>
-        <div className="grid grid-cols-3 gap-3">
+        <div className='grid grid-cols-3 gap-3'>
           {[
-            { id: 'Vietnamese', label: 'Vietnamese' },
-            { id: 'Asian', label: 'Asian' },
-            { id: 'European', label: 'European' }
+            { id: 'Vietnamese', label: 'Việt Nam' },
+            { id: 'Asian', label: 'Châu Á' },
+            { id: 'European', label: 'Châu Âu' },
           ].map((cuisine) => (
             <button
               key={cuisine.id}
               onClick={() => {
                 if (preferredCuisines.includes(cuisine.id)) {
-                  setPreferredCuisines(preferredCuisines.filter(c => c !== cuisine.id));
+                  setPreferredCuisines(preferredCuisines.filter((c) => c !== cuisine.id));
                 } else {
                   setPreferredCuisines([...preferredCuisines, cuisine.id]);
                 }
@@ -262,8 +259,8 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                   : 'border-border-light bg-bg text-text-body hover:border-primary/50'
               } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <div className="text-center">
-                <div className="text-sm font-medium">{cuisine.label}</div>
+              <div className='text-center'>
+                <div className='text-sm font-medium'>{cuisine.label}</div>
               </div>
             </button>
           ))}
@@ -271,12 +268,12 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
       </div>
 
       {/* Cooking Time */}
-      <div className="mb-6">
-        <label className="flex items-center text-sm font-medium text-text-body mb-3">
-          <FaStopwatch className="mr-2 text-warning" />
-          Cooking Time
+      <div className='mb-6'>
+        <label className='flex items-center text-sm font-medium text-text-body mb-3'>
+          <FaStopwatch className='mr-2 text-warning' />
+          Thời gian nấu
         </label>
-        <div className="grid grid-cols-3 gap-3">
+        <div className='grid grid-cols-3 gap-3'>
           <button
             onClick={() => setCookingTime('quick')}
             disabled={isGenerating}
@@ -286,9 +283,9 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-success/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Quick</div>
-              <div className="text-xs text-text-muted mt-1">&lt; 30 mins</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Nhanh</div>
+              <div className='text-xs text-text-muted mt-1'>&lt; 30 phút</div>
             </div>
           </button>
           <button
@@ -300,9 +297,9 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-warning/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Moderate</div>
-              <div className="text-xs text-text-muted mt-1">30-60 mins</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Vừa</div>
+              <div className='text-xs text-text-muted mt-1'>30-60 phút</div>
             </div>
           </button>
           <button
@@ -314,21 +311,21 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                 : 'border-border-light bg-bg text-text-body hover:border-error/50'
             } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <div className="text-center">
-              <div className="text-sm font-medium">Elaborate</div>
-              <div className="text-xs text-text-muted mt-1">&gt; 60 mins</div>
+            <div className='text-center'>
+              <div className='text-sm font-medium'>Cầu kỳ</div>
+              <div className='text-xs text-text-muted mt-1'>&gt; 60 phút</div>
             </div>
           </button>
         </div>
       </div>
 
       {/* Meal Frequency */}
-      <div className="mb-6">
-        <label className="flex items-center text-sm font-medium text-text-body mb-3">
-          <FaBowlFood className="mr-2 text-info" />
-          Meals Per Day
+      <div className='mb-6'>
+        <label className='flex items-center text-sm font-medium text-text-body mb-3'>
+          <FaBowlFood className='mr-2 text-info' />
+          Số bữa mỗi ngày
         </label>
-        <div className="grid grid-cols-5 gap-2">
+        <div className='grid grid-cols-5 gap-2'>
           {[2, 3, 4, 5, 6].map((num) => (
             <button
               key={num}
@@ -340,9 +337,9 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
                   : 'border-border-light bg-bg text-text-body hover:border-info/50'
               } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <div className="text-center">
-                <div className="text-lg font-medium">{num}</div>
-                <div className="text-xs text-text-muted">meals</div>
+              <div className='text-center'>
+                <div className='text-lg font-medium'>{num}</div>
+                <div className='text-xs text-text-muted'>bữa</div>
               </div>
             </button>
           ))}
@@ -351,17 +348,15 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
 
       {/* Errors */}
       {errors.length > 0 && (
-        <div className="mb-6 bg-error-bg border border-error-border rounded-lg p-4">
-          <div className="flex items-start">
-            <FaExclamationTriangle className="text-error mr-3 mt-0.5" />
+        <div className='mb-6 bg-error-bg border border-error-border rounded-lg p-4'>
+          <div className='flex items-start'>
+            <FaExclamationTriangle className='text-error mr-3 mt-0.5' />
             <div>
-              <h3 className="text-sm font-medium text-error-foreground mb-2">
-                Please fix the following errors:
-              </h3>
-              <ul className="text-sm text-error-foreground space-y-1">
+              <h3 className='text-sm font-medium text-error-foreground mb-2'>Vui lòng sửa các lỗi sau:</h3>
+              <ul className='text-sm text-error-foreground space-y-1'>
                 {errors.map((error, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="mr-2">•</span>
+                  <li key={index} className='flex items-start'>
+                    <span className='mr-2'>•</span>
                     <span>{error}</span>
                   </li>
                 ))}
@@ -372,7 +367,7 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
       )}
 
       {/* Generate Button */}
-      <div className="flex justify-center">
+      <div className='flex justify-center'>
         <button
           onClick={handleGenerateMealPlan}
           disabled={isGenerating}
@@ -384,13 +379,13 @@ export default function MealPlanGenerator({ healthProfile, onMealPlanGenerated }
         >
           {isGenerating ? (
             <>
-              <FaSpinner className="animate-spin mr-2" />
-              Generating plan...
+              <FaSpinner className='animate-spin mr-2' />
+              Đang tạo kế hoạch...
             </>
           ) : (
             <>
-              <FaCheckCircle className="mr-2" />
-              Generate Meal Plan
+              <FaCheckCircle className='mr-2' />
+              Tạo kế hoạch bữa ăn
             </>
           )}
         </button>

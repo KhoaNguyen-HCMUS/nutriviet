@@ -5,11 +5,11 @@ import logo from '../../public/logo.png'
 import ThemeToggle from './themeToggle'	
 
 const navItems = [
-	{path: '/dashboard', label: 'Dashboard'},
-  { path: '/profile', label: 'Profile' },
-  { path: '/meal-plans', label: 'Meal Plans' },
-  { path: '/health-assistant', label: 'Health Assistant' },
-  { path: '/food-recognition', label: 'Food Recognition' }
+	{path: '/dashboard', label: 'Điều khiển'},
+  { path: '/profile', label: 'Hồ sơ' },
+  { path: '/meal-plans', label: 'Thực đơn' },
+  { path: '/health-assistant', label: 'Trợ lý y khoa' },
+  { path: '/food-recognition', label: 'Nhận diện món ăn' }
 ]
 
 export default function Navbar() {

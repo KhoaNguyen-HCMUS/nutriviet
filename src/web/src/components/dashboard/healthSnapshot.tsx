@@ -86,11 +86,11 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
           <div className='p-1.5 bg-primary rounded-lg mr-2'>
             <FaFire className='text-primary-contrast text-lg' />
           </div>
-          <h2 className='text-lg font-semibold text-text-header'>Health Snapshot</h2>
+          <h2 className='text-lg font-semibold text-text-header'>Tổng quan sức khỏe</h2>
         </div>
         <div className='flex items-center text-sm text-text-body'>
           <FaTrophy className='mr-1 text-warning' />
-          <span>{snapshot.streak} day streak</span>
+          <span>{snapshot.streak} ngày liên tiếp</span>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
             <FaWeight className='text-xl text-primary' />
           </div>
           <div>
-            <h3 className='text-sm font-medium text-text-body'>Current Weight</h3>
+            <h3 className='text-sm font-medium text-text-body'>Cân nặng hiện tại</h3>
             <p className='text-sm font-bold text-text-header'>{snapshot.currentWeight.toFixed(1)}kg</p>
           </div>
         </div>
@@ -127,9 +127,9 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
             {getGoalIcon(snapshot.goal)}
           </div>
           <div>
-            <h3 className='text-sm font-medium text-text-body'>Goal</h3>
+            <h3 className='text-sm font-medium text-text-body'>Mục tiêu</h3>
             <p className={`text-xs font-medium capitalize ${getGoalColor(snapshot.goal)}`}>
-              {snapshot.goal} weight
+              {snapshot.goal === 'lose' ? 'giảm cân' : snapshot.goal === 'gain' ? 'tăng cân' : 'duy trì cân nặng'}
               {snapshot.targetWeight && ` (${snapshot.targetWeight.toFixed(1)}kg)`}
             </p>
           </div>
@@ -141,7 +141,7 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
             {getWeightChangeIcon(snapshot.weightChange)}
           </div>
           <div>
-            <h3 className='text-sm font-medium text-text-body'>This Week</h3>
+            <h3 className='text-sm font-medium text-text-body'>Tuần này</h3>
             <p className={`text-xs font-medium ${getWeightChangeColor(snapshot.weightChange)}`}>
               {formatWeightChange(snapshot.weightChange)}
             </p>

@@ -1,18 +1,14 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import type {
-  MealPlan,
-  SubstitutionSuggestion,
-  GroceryItem,
-} from "../types/mealPlan";
-import type { HealthProfile } from "../types/health";
-import type { MealPlanResponseData } from "../services/mealPlan";
-import { mapApiResponseToMealPlan } from "../utils/mealPlanMapper";
-import MealPlanGenerator from "../components/mealPlan/mealPlanGenerator";
-import MealPlanDisplay from "../components/mealPlan/mealPlanDisplay";
-import MealSubstitution from "../components/mealPlan/mealSubstitution";
-import GroceryList from "../components/mealPlan/groceryList";
-import { FaUtensils, FaInfoCircle } from "react-icons/fa";
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import type { MealPlan, SubstitutionSuggestion, GroceryItem } from '../types/mealPlan';
+import type { HealthProfile } from '../types/health';
+import type { MealPlanResponseData } from '../services/mealPlan';
+import { mapApiResponseToMealPlan } from '../utils/mealPlanMapper';
+import MealPlanGenerator from '../components/mealPlan/mealPlanGenerator';
+import MealPlanDisplay from '../components/mealPlan/mealPlanDisplay';
+import MealSubstitution from '../components/mealPlan/mealSubstitution';
+import GroceryList from '../components/mealPlan/groceryList';
+import { FaUtensils, FaInfoCircle } from 'react-icons/fa';
 
 export default function MealPlanPage() {
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
@@ -29,24 +25,24 @@ export default function MealPlanPage() {
   const [healthProfile] = useState<Partial<HealthProfile>>({
     personalInfo: {
       age: 30,
-      gender: "male",
+      gender: 'male',
       height: 175,
       weight: 70,
-      location: "Ho Chi Minh City, Vietnam",
+      location: 'Ho Chi Minh City, Vietnam',
     },
     goals: {
-      primary: "maintain",
+      primary: 'maintain',
     },
-    activityLevel: "moderate",
+    activityLevel: 'moderate',
     medicalInfo: {
-      conditions: "None",
-      allergies: "None",
-      medications: "None",
+      conditions: 'None',
+      allergies: 'None',
+      medications: 'None',
     },
     units: {
-      weight: "kg",
-      height: "cm",
-      temperature: "celsius",
+      weight: 'kg',
+      height: 'cm',
+      temperature: 'celsius',
     },
     consent: true,
   });
@@ -55,24 +51,20 @@ export default function MealPlanPage() {
     const newMealPlan = mapApiResponseToMealPlan(responseData);
     setMealPlan(newMealPlan);
     toast.success(
-      `${
-        newMealPlan.duration === "weekly" ? "Weekly" : "Monthly"
-      } meal plan generated successfully!`
+      `Kế hoạch bữa ăn ${newMealPlan.duration === 'weekly' ? 'hàng tuần' : 'hàng tháng'} đã được tạo thành công!`
     );
   };
 
   const handleMealSubstitute = (mealId: string, mealType: string) => {
     // Find the day index and original meal
     let dayIndex = -1;
-    let originalMeal = "Unknown Meal";
+    let originalMeal = 'Unknown Meal';
 
-    console.log("Handling meal substitution for:", { mealId, mealType });
+    console.log('Handling meal substitution for:', { mealId, mealType });
 
     if (mealPlan) {
       for (let i = 0; i < mealPlan.dailyPlans.length; i++) {
-        const foundMeal = mealPlan.dailyPlans[i].meals.find(
-          (meal) => meal.id === mealId
-        );
+        const foundMeal = mealPlan.dailyPlans[i].meals.find((meal) => meal.id === mealId);
         if (foundMeal) {
           dayIndex = i;
           originalMeal = foundMeal.name;
@@ -87,7 +79,7 @@ export default function MealPlanPage() {
       mealType,
       originalMeal,
       dayIndex,
-      mealPlanId: mealPlan?.id || "", // Add the meal plan ID
+      mealPlanId: mealPlan?.id || '', // Add the meal plan ID
     });
     setIsSubstituting(true);
   };
@@ -113,27 +105,11 @@ export default function MealPlanPage() {
               sugar: meal.macros.sugar,
             }
           : {
-              protein: Math.max(
-                0,
-                meal.macros.protein + alternative.nutritionalDifference.protein
-              ),
-              carbohydrates: Math.max(
-                0,
-                meal.macros.carbohydrates +
-                  alternative.nutritionalDifference.carbohydrates
-              ),
-              fat: Math.max(
-                0,
-                meal.macros.fat + alternative.nutritionalDifference.fat
-              ),
-              fiber: Math.max(
-                0,
-                meal.macros.fiber + alternative.nutritionalDifference.fiber
-              ),
-              sugar: Math.max(
-                0,
-                meal.macros.sugar + alternative.nutritionalDifference.sugar
-              ),
+              protein: Math.max(0, meal.macros.protein + alternative.nutritionalDifference.protein),
+              carbohydrates: Math.max(0, meal.macros.carbohydrates + alternative.nutritionalDifference.carbohydrates),
+              fat: Math.max(0, meal.macros.fat + alternative.nutritionalDifference.fat),
+              fiber: Math.max(0, meal.macros.fiber + alternative.nutritionalDifference.fiber),
+              sugar: Math.max(0, meal.macros.sugar + alternative.nutritionalDifference.sugar),
             };
 
         const updatedCalories = alternative.absolute
@@ -158,7 +134,7 @@ export default function MealPlanPage() {
               name: alternative.name,
               amount: alternative.amount,
               unit: alternative.unit,
-              category: "protein" as const,
+              category: 'protein' as const,
               calories: 0,
               macros: {
                 protein: 0,
@@ -172,13 +148,8 @@ export default function MealPlanPage() {
           ],
           instructions: `Prepare ${alternative.name} according to standard recipe. ${alternative.reason}`,
           substitutions: meal.substitutions
-            ? [
-                ...meal.substitutions,
-                `Substituted for ${substitution.original}: ${alternative.reason}`,
-              ]
-            : [
-                `Substituted for ${substitution.original}: ${alternative.reason}`,
-              ],
+            ? [...meal.substitutions, `Substituted for ${substitution.original}: ${alternative.reason}`]
+            : [`Substituted for ${substitution.original}: ${alternative.reason}`],
         };
       });
 
@@ -186,10 +157,7 @@ export default function MealPlanPage() {
       const totalCalories = meals.reduce((sum, m) => sum + m.calories, 0);
       const macros = {
         protein: meals.reduce((sum, m) => sum + m.macros.protein, 0),
-        carbohydrates: meals.reduce(
-          (sum, m) => sum + m.macros.carbohydrates,
-          0
-        ),
+        carbohydrates: meals.reduce((sum, m) => sum + m.macros.carbohydrates, 0),
         fat: meals.reduce((sum, m) => sum + m.macros.fat, 0),
         fiber: meals.reduce((sum, m) => sum + m.macros.fiber, 0),
         sugar: meals.reduce((sum, m) => sum + m.macros.sugar, 0),
@@ -200,21 +168,20 @@ export default function MealPlanPage() {
 
     // If backend returned flattened grocery items, merge to grocery list
     if (substitution.backendUpdated?.groceryListItems) {
-      updatedMealPlan.groceryList =
-        substitution.backendUpdated.groceryListItems.map((item) => ({
-          name: item.name,
-          category: item.category,
-          amount: item.amount,
-          unit: item.unit,
-          estimatedCost: 0,
-          isChecked: false,
-        }));
+      updatedMealPlan.groceryList = substitution.backendUpdated.groceryListItems.map((item) => ({
+        name: item.name,
+        category: item.category,
+        amount: item.amount,
+        unit: item.unit,
+        estimatedCost: 0,
+        isChecked: false,
+      }));
     }
 
     setMealPlan(updatedMealPlan);
     setIsSubstituting(false);
     setSubstitutionData(null);
-    toast.success(`Meal substituted successfully!`);
+    toast.success(`Thay thế bữa ăn thành công!`);
   };
 
   const handleGroceryListUpdate = (index: number, item: GroceryItem) => {
@@ -232,9 +199,7 @@ export default function MealPlanPage() {
   const handleGroceryListDelete = (index: number) => {
     if (!mealPlan) return;
 
-    const updatedGroceryList = mealPlan.groceryList.filter(
-      (_, i) => i !== index
-    );
+    const updatedGroceryList = mealPlan.groceryList.filter((_, i) => i !== index);
 
     setMealPlan({
       ...mealPlan,
@@ -252,50 +217,41 @@ export default function MealPlanPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-(--gradient-primary) py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className='min-h-screen bg-linear-(--gradient-primary) py-8'>
+      <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
         {/* Page Title */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <div className="p-3 bg-primary rounded-lg mr-4">
-              <FaUtensils className="text-primary-contrast text-2xl" />
+        <div className='mb-8'>
+          <div className='flex items-center mb-4'>
+            <div className='p-3 bg-primary rounded-lg mr-4'>
+              <FaUtensils className='text-primary-contrast text-2xl' />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-text-header">
-                Meal Planning
-              </h1>
-              <p className="mt-2 text-text-body">
-                AI-powered meal plans tailored to your health goals and
-                preferences
+              <h1 className='text-3xl font-bold text-text-header'>Lập kế hoạch bữa ăn</h1>
+              <p className='mt-2 text-text-body'>
+                Kế hoạch bữa ăn được tạo bởi AI phù hợp với mục tiêu sức khỏe và sở thích của bạn
               </p>
             </div>
           </div>
         </div>
 
         {/* Info Banner */}
-        <div className="mb-6 bg-info-bg border border-info-border rounded-lg p-4">
-          <div className="flex items-start">
-            <FaInfoCircle className="text-info mr-3 mt-0.5" />
-            <div className="text-sm text-info-foreground">
-              <p className="font-medium mb-1 text-text-header">How it works:</p>
-              <ul className="space-y-1 text-text-body">
-                <li>• Select your preferred duration (weekly or monthly)</li>
-                <li>• Our AI analyzes your health profile and preferences</li>
-                <li>• Get a personalized meal plan with nutritional balance</li>
-                <li>
-                  • Customize meals with substitutions and view your grocery
-                  list
-                </li>
+        <div className='mb-6 bg-info-bg border border-info-border rounded-lg p-4'>
+          <div className='flex items-start'>
+            <FaInfoCircle className='text-info mr-3 mt-0.5' />
+            <div className='text-sm text-info-foreground'>
+              <p className='font-medium mb-1 text-text-header'>Cách hoạt động:</p>
+              <ul className='space-y-1 text-text-body'>
+                <li>• Chọn thời gian ưa thích (hàng tuần hoặc hàng tháng)</li>
+                <li>• AI phân tích hồ sơ sức khỏe và sở thích của bạn</li>
+                <li>• Nhận kế hoạch bữa ăn cá nhân hóa với cân bằng dinh dưỡng</li>
+                <li>• Tùy chỉnh bữa ăn với thay thế và xem danh sách mua sắm</li>
               </ul>
             </div>
           </div>
         </div>
 
         {/* Meal Plan Generator */}
-        <MealPlanGenerator
-          healthProfile={healthProfile}
-          onMealPlanGenerated={handleMealPlanGenerated}
-        />
+        <MealPlanGenerator healthProfile={healthProfile} onMealPlanGenerated={handleMealPlanGenerated} />
 
         {/* Meal Plan Display */}
         {mealPlan && (
@@ -335,25 +291,22 @@ export default function MealPlanPage() {
 
         {/* No Meal Plan State */}
         {!mealPlan && (
-          <div className="bg-bg-card rounded-lg shadow-md p-12 text-center">
-            <div className="max-w-md mx-auto">
-              <div className="p-4 bg-bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <FaUtensils className="text-2xl text-text-muted" />
+          <div className='bg-bg-card rounded-lg shadow-md p-12 text-center'>
+            <div className='max-w-md mx-auto'>
+              <div className='p-4 bg-bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
+                <FaUtensils className='text-2xl text-text-muted' />
               </div>
-              <h3 className="text-xl font-semibold text-text-header mb-2">
-                No Meal Plan Yet
-              </h3>
-              <p className="text-text-body mb-6">
-                Generate your first personalized meal plan based on your health
-                profile and preferences.
+              <h3 className='text-xl font-semibold text-text-header mb-2'>Chưa có kế hoạch bữa ăn</h3>
+              <p className='text-text-body mb-6'>
+                Tạo kế hoạch bữa ăn cá nhân hóa đầu tiên dựa trên hồ sơ sức khỏe và sở thích của bạn.
               </p>
-              <div className="text-sm text-text-body">
-                <p className="mb-2">Your meal plan will include:</p>
-                <ul className="space-y-1 text-left">
-                  <li>• Daily meal suggestions with nutritional info</li>
-                  <li>• Ingredient lists and cooking instructions</li>
-                  <li>• Automatic grocery list generation</li>
-                  <li>• Meal substitution options</li>
+              <div className='text-sm text-text-body'>
+                <p className='mb-2'>Kế hoạch bữa ăn của bạn sẽ bao gồm:</p>
+                <ul className='space-y-1 text-left'>
+                  <li>• Gợi ý bữa ăn hàng ngày với thông tin dinh dưỡng</li>
+                  <li>• Danh sách nguyên liệu và hướng dẫn nấu ăn</li>
+                  <li>• Tự động tạo danh sách mua sắm</li>
+                  <li>• Tùy chọn thay thế bữa ăn</li>
                 </ul>
               </div>
             </div>

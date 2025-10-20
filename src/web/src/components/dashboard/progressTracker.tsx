@@ -56,7 +56,7 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
         <div className='p-1.5 bg-primary rounded-lg mr-2'>
           <FaFire className='text-primary-contrast text-lg' />
         </div>
-        <h2 className='text-lg font-semibold text-text-header'>Today's Progress</h2>
+        <h2 className='text-lg font-semibold text-text-header'>Tiến độ hôm nay</h2>
       </div>
 
       {/* Calories Progress */}
@@ -64,7 +64,7 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
         <div className='flex items-center justify-between mb-2'>
           <div className='flex items-center'>
             <FaFire className='text-orange-500 mr-2' />
-            <span className='text-base font-medium text-text-header'>Calories</span>
+            <span className='text-base font-medium text-text-header'>Calo</span>
           </div>
           <div className='text-right'>
             <span className={`text-xl font-bold ${getProgressColor(progress.calories.percentage)}`}>
@@ -85,10 +85,10 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
 
         <div className='flex justify-between text-sm'>
           <span className={`font-medium ${getProgressColor(progress.calories.percentage)}`}>
-            {progress.calories.percentage.toFixed(0)}% complete
+            {progress.calories.percentage.toFixed(0)}% hoàn thành
           </span>
           <span className='text-text-body'>
-            {progress.calories.remaining > 0 ? `${progress.calories.remaining} remaining` : 'Goal reached!'}
+            {progress.calories.remaining > 0 ? `Còn lại ${progress.calories.remaining}` : 'Đã đạt mục tiêu!'}
           </span>
         </div>
       </div>
@@ -103,7 +103,17 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
               <div className='flex items-center justify-between mb-1.5'>
                 <div className='flex items-center'>
                   {getMacroIcon(macro)}
-                  <span className='ml-1.5 text-xs font-medium text-text-body capitalize'>{macro}</span>
+                  <span className='ml-1.5 text-xs font-medium text-text-body capitalize'>
+                    {macro === 'protein'
+                      ? 'Protein'
+                      : macro === 'carbohydrates'
+                      ? 'Carb'
+                      : macro === 'fat'
+                      ? 'Chất béo'
+                      : macro === 'fiber'
+                      ? 'Chất xơ'
+                      : macro}
+                  </span>
                 </div>
                 <span className={`text-xs font-bold ${getMacroColor(macro)}`}>{data.consumed}g</span>
               </div>

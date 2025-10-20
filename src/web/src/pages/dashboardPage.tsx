@@ -121,7 +121,7 @@ export default function DashboardPage() {
       <div className='min-h-screen bg-linear-(--gradient-primary) flex items-center justify-center'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
-          <p className='text-text-body'>Loading dashboard...</p>
+          <p className='text-text-body'>Đang tải bảng điều khiển...</p>
         </div>
       </div>
     );
@@ -131,12 +131,12 @@ export default function DashboardPage() {
     return (
       <div className='min-h-screen bg-linear-(--gradient-primary) flex items-center justify-center'>
         <div className='text-center'>
-          <p className='text-text-body'>Failed to load dashboard data</p>
+          <p className='text-text-body'>Không thể tải dữ liệu bảng điều khiển</p>
           <button
             onClick={loadDashboardData}
             className='mt-4 px-4 py-2 bg-primary text-primary-contrast rounded-lg hover:bg-primary/90'
           >
-            Retry
+            Thử lại
           </button>
         </div>
       </div>
@@ -147,8 +147,8 @@ export default function DashboardPage() {
     {
       id: 'scan',
       type: 'scan',
-      title: 'Scan Food',
-      description: 'Take a photo to identify food and nutrition',
+      title: 'Quét thực phẩm',
+      description: 'Chụp ảnh để nhận diện thực phẩm và dinh dưỡng',
       icon: 'camera',
       color: 'blue',
       action: handleScan,
@@ -156,11 +156,11 @@ export default function DashboardPage() {
     {
       id: 'edit_profile',
       type: 'edit_profile',
-      title: 'Edit Profile',
-      description: 'Update your health profile and preferences',
+      title: 'Chỉnh sửa hồ sơ',
+      description: 'Cập nhật hồ sơ sức khỏe và tùy chọn của bạn',
       icon: 'user-edit',
       color: 'green',
-      action: () => toast.info('Edit profile feature coming soon!'),
+      action: () => toast.info('Tính năng chỉnh sửa hồ sơ sắp ra mắt!'),
     },
   ];
 
@@ -174,8 +174,8 @@ export default function DashboardPage() {
               <FaHome className='text-xl' />
             </div>
             <div>
-              <h1 className='text-2xl font-bold text-primary'>Dashboard</h1>
-              <p className='text-sm text-text-header'>Track your health journey and daily progress</p>
+              <h1 className='text-2xl font-bold text-primary'>Bảng điều khiển</h1>
+              <p className='text-sm text-text-header'>Theo dõi hành trình sức khỏe và tiến độ hàng ngày</p>
             </div>
           </div>
         </div>
@@ -185,9 +185,9 @@ export default function DashboardPage() {
           <div className='flex items-start'>
             <FaInfoCircle className='text-blue-500 mr-3 mt-0.5' />
             <div className='text-sm '>
-              <p className='font-medium mb-1 text-text-header'>Welcome to your health dashboard!</p>
+              <p className='font-medium mb-1 text-text-header'>Chào mừng đến với bảng điều khiển sức khỏe!</p>
               <p className='text-text-body'>
-                Track your daily nutrition, monitor your progress, and stay on top of your health goals.
+                Theo dõi dinh dưỡng hàng ngày, giám sát tiến độ và luôn đạt được mục tiêu sức khỏe của bạn.
               </p>
             </div>
           </div>

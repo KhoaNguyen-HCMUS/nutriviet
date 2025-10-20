@@ -3,13 +3,14 @@ import requests
 import google.generativeai as genai
 from typing import Dict, Any, List
 from dotenv import load_dotenv
+import asyncio  # Add this import for asyncio.sleep
 
 load_dotenv()
 
 class ChatProcessor:
     def __init__(self):
         # ES config
-        self.es_url = "http://localhost:9200/knowledge/_search"
+        self.es_url = "http://localhost:9201/knowledge/_search"
         
         # Gemini config
         api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
@@ -59,7 +60,7 @@ Hãy phân tích cuộc hội thoại và đưa ra phản hồi phù hợp."""
         
         # ✅ FIX: Translate Vietnamese to English for ES search
         query_en = await self._translate_vi_to_en(user_message, chat_history)
-        print(f"🔍 Translated query: '{query_en}'")
+        print(f"Translated query: '{query_en}'")
         
         # Search medical knowledge if translation successful
         medical_context = ""
@@ -68,9 +69,9 @@ Hãy phân tích cuộc hội thoại và đưa ra phản hồi phù hợp."""
             try:
                 snippets, _ = self._search_elasticsearch(query_en, topk=5)
                 medical_context = "\n".join(snippets[:3])
-                print(f"📚 Found {len(snippets)} medical snippets")
+                print(f"Found {len(snippets)} medical snippets")
             except Exception as e:
-                print(f"❌ ES search failed: {e}")
+                print(f"ES search failed: {str(e)}")
         
         # Generate contextual response
         ai_response = await self._generate_chat_response(
@@ -87,7 +88,7 @@ Hãy phân tích cuộc hội thoại và đưa ra phản hồi phù hợp."""
         return {
             "response": ai_response,
             "diagnosis_context": diagnosis_context,
-            "medical_snippets": snippets[:2],
+            "medical_snippets": snippets[:2] if snippets else [],
             "symptoms_detected": query_en
         }
 
@@ -112,21 +113,38 @@ Hãy phân tích cuộc hội thoại và đưa ra phản hồi phù hợp."""
     async def _translate_vi_to_en(self, message: str, chat_history: List[str]) -> str:
         """✅ FIX: Translate Vietnamese medical terms to English (theo diagnoseSystem.py)"""
         try:
-            # Use recent conversation for context
-            recent_messages = chat_history[-3:] if len(chat_history) > 3 else chat_history
-            context_text = " ".join(recent_messages) + " " + message
+            # Thêm retry logic
+            for attempt in range(3):  # Thử tối đa 3 lần
+                try:
+                    # Sử dụng context như cũ
+                    recent_messages = chat_history[-3:] if len(chat_history) > 3 else chat_history
+                    context_text = " ".join(recent_messages) + " " + message
+                    
+                    prompt = self.translate_prompt + context_text
+                    
+                    response = self.model.generate_content(prompt)
+                    query_en = response.text.strip()
+                    
+                    print(f"Translation successful: '{message}' → '{query_en}'")
+                    return query_en
+                
+                except Exception as e:
+                    # Kiểm tra xem có phải lỗi rate limit không
+                    if "ResourceExhausted" in str(e) or "429" in str(e):
+                        print(f"API rate limited (attempt {attempt+1}/3). Waiting...")
+                        # Tăng dần thời gian chờ giữa các lần thử
+                        await asyncio.sleep(2 * (attempt + 1))
+                    else:
+                        # Nếu là lỗi khác, ném lại exception
+                        raise
             
-            # Use the same prompt as diagnoseSystem.py
-            prompt = self.translate_prompt + context_text
-            
-            response = self.model.generate_content(prompt)
-            query_en = response.text.strip()
-            
-            print(f"✅ Translation successful: '{message}' → '{query_en}'")
-            return query_en
+            # Nếu thử 3 lần đều thất bại vì rate limit
+            print("Rate limit persists. Returning empty translation.")
+            return ""
             
         except Exception as e:
-            print(f"❌ Translation failed: {e}")
+            # Sử dụng ASCII-safe log
+            print(f"Translation failed: {str(e)}")
             return ""
 
     def _search_elasticsearch(self, query: str, topk: int = 5):
@@ -144,23 +162,28 @@ Hãy phân tích cuộc hội thoại và đưa ra phản hồi phù hợp."""
             hits = response.json().get("hits", {}).get("hits", [])
             snippets = [hit["_source"]["body"] for hit in hits if "body" in hit["_source"]]
             
-            print(f"📊 ES returned {len(snippets)} results for query: {query}")
+            print(f"ES returned {len(snippets)} results for query: {query}")
             return snippets, len(hits)
 
         except Exception as e:
-            print(f"❌ Elasticsearch error: {e}")
+            print(f"Elasticsearch error: {str(e)}")
             return [], 0
 
     async def _generate_chat_response(self, conversation_context: str, user_message: str, medical_context: str, snippets: List[str] = None, query_en: str = "") -> str:
-        prompt = f"""{self.system_prompt}
+        """Generate chat response with medical context"""
+        try:
+            # Thêm retry logic cho API calls
+            for attempt in range(3):
+                try:
+                    prompt = f"""{self.system_prompt}
 
 {conversation_context}
 
 """
-    
-        # ✅ FIX: Add medical context with citation requirement (theo diagnoseSystem.py)
-        if medical_context.strip() and snippets:
-            prompt += f"""
+                
+                    # ✅ FIX: Add medical context with citation requirement (theo diagnoseSystem.py)
+                    if medical_context.strip() and snippets:
+                        prompt += f"""
 THÔNG TIN Y KHOA LIÊN QUAN (từ tìm kiếm: "{query_en}"):
 {medical_context}
 
@@ -172,10 +195,24 @@ THÔNG TIN Y KHOA LIÊN QUAN (từ tìm kiếm: "{query_en}"):
 
 """
 
-        prompt += "\nTrợ lý AI:"
-        
-        response = self.model.generate_content(prompt)
-        return response.text.strip()
+                    prompt += "\nTrợ lý AI:"
+                    
+                    response = self.model.generate_content(prompt)
+                    return response.text.strip()
+                    
+                except Exception as e:
+                    if "ResourceExhausted" in str(e) or "429" in str(e):
+                        print(f"API rate limited in response generation (attempt {attempt+1}/3). Waiting...")
+                        await asyncio.sleep(2 * (attempt + 1))
+                    else:
+                        raise
+                        
+            # Fallback message if all attempts fail
+            return "Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau ít phút."
+            
+        except Exception as e:
+            print(f"Response generation failed: {str(e)}")
+            return "Đã xảy ra lỗi khi xử lý tin nhắn của bạn. Vui lòng thử lại."
 
     async def _analyze_conversation_context(self, full_history: List[str]) -> Dict[str, Any]:
         """Analyze conversation to extract diagnosis context"""

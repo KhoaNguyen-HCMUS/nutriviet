@@ -1,0 +1,36 @@
+[2025-10-20 11:08:58,561][INFO ][node                     ] [Doppelganger] version[2.4.1], pid[2122], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 11:08:58,562][INFO ][node                     ] [Doppelganger] initializing ...
+[2025-10-20 11:09:00,338][INFO ][plugins                  ] [Doppelganger] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 11:09:00,427][INFO ][env                      ] [Doppelganger] using [1] data paths, mounts [[/mnt/d (D:\)]], net usable_space [169.2gb], net total_space [199.9gb], spins? [possibly], types [9p]
+[2025-10-20 11:09:00,427][INFO ][env                      ] [Doppelganger] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 11:09:04,133][INFO ][node                     ] [Doppelganger] initialized
+[2025-10-20 11:09:04,134][INFO ][node                     ] [Doppelganger] starting ...
+[2025-10-20 11:09:04,355][INFO ][transport                ] [Doppelganger] publish_address {10.255.255.254:9300}, bound_addresses {[::1]:9300}, {10.255.255.254:9300}, {127.0.0.1:9300}
+[2025-10-20 11:09:04,381][INFO ][discovery                ] [Doppelganger] elasticsearch/c7-0p_0YRLm2uy6KKmuFDA
+[2025-10-20 11:09:07,514][INFO ][cluster.service          ] [Doppelganger] new_master {Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 11:09:07,546][INFO ][http                     ] [Doppelganger] publish_address {10.255.255.254:9200}, bound_addresses {[::1]:9200}, {10.255.255.254:9200}, {127.0.0.1:9200}
+[2025-10-20 11:09:07,546][INFO ][node                     ] [Doppelganger] started
+[2025-10-20 11:09:07,651][INFO ][gateway                  ] [Doppelganger] recovered [0] indices into cluster_state
+[2025-10-20 11:11:29,714][INFO ][node                     ] [the Tomorrow Man Zarrko] version[2.4.1], pid[2386], build[c67dc32/2016-09-27T18:57:55Z]
+[2025-10-20 11:11:29,715][INFO ][node                     ] [the Tomorrow Man Zarrko] initializing ...
+[2025-10-20 11:11:30,981][INFO ][plugins                  ] [the Tomorrow Man Zarrko] modules [reindex, lang-expression, lang-groovy], plugins [], sites []
+[2025-10-20 11:11:31,087][INFO ][env                      ] [the Tomorrow Man Zarrko] using [1] data paths, mounts [[/mnt/d (D:\)]], net usable_space [169.2gb], net total_space [199.9gb], spins? [possibly], types [9p]
+[2025-10-20 11:11:31,088][INFO ][env                      ] [the Tomorrow Man Zarrko] heap size [989.8mb], compressed ordinary object pointers [true]
+[2025-10-20 11:11:34,824][INFO ][node                     ] [the Tomorrow Man Zarrko] initialized
+[2025-10-20 11:11:34,825][INFO ][node                     ] [the Tomorrow Man Zarrko] starting ...
+[2025-10-20 11:11:35,026][INFO ][transport                ] [the Tomorrow Man Zarrko] publish_address {10.255.255.254:9301}, bound_addresses {[::1]:9301}, {10.255.255.254:9301}, {127.0.0.1:9301}
+[2025-10-20 11:11:35,034][INFO ][discovery                ] [the Tomorrow Man Zarrko] elasticsearch/BQzBJ0A8RGGXivFzU9pnjA
+[2025-10-20 11:11:38,098][INFO ][cluster.service          ] [Doppelganger] added {{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301},}, reason: zen-disco-join(join from node[{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301}])
+[2025-10-20 11:11:38,149][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] detected_master {Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}, added {{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300},}, reason: zen-disco-receive(from master [{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}])
+[2025-10-20 11:11:38,206][INFO ][http                     ] [the Tomorrow Man Zarrko] publish_address {10.255.255.254:9201}, bound_addresses {[::1]:9201}, {10.255.255.254:9201}, {127.0.0.1:9201}
+[2025-10-20 11:11:38,207][INFO ][node                     ] [the Tomorrow Man Zarrko] started
+[2025-10-20 11:17:06,871][INFO ][node                     ] [Doppelganger] stopping ...
+[2025-10-20 11:17:06,902][INFO ][discovery.zen            ] [the Tomorrow Man Zarrko] master_left [{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300}], reason [shut_down]
+[2025-10-20 11:17:06,911][WARN ][discovery.zen            ] [the Tomorrow Man Zarrko] master left (reason = shut_down), current nodes: {{the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301},}
+[2025-10-20 11:17:06,916][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] removed {{Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300},}, reason: zen-disco-master_failed ({Doppelganger}{c7-0p_0YRLm2uy6KKmuFDA}{10.255.255.254}{10.255.255.254:9300})
+[2025-10-20 11:17:06,943][INFO ][node                     ] [Doppelganger] stopped
+[2025-10-20 11:17:06,944][INFO ][node                     ] [Doppelganger] closing ...
+[2025-10-20 11:17:07,016][INFO ][node                     ] [Doppelganger] closed
+[2025-10-20 11:17:09,950][INFO ][cluster.service          ] [the Tomorrow Man Zarrko] new_master {the Tomorrow Man Zarrko}{BQzBJ0A8RGGXivFzU9pnjA}{10.255.255.254}{10.255.255.254:9301}, reason: zen-disco-join(elected_as_master, [0] joins received)
+[2025-10-20 11:23:09,060][INFO ][cluster.metadata         ] [the Tomorrow Man Zarrko] [knowledge] creating index, cause [api], templates [], shards [1]/[0], mappings [sentence]
+[2025-10-20 11:23:09,820][INFO ][cluster.routing.allocation] [the Tomorrow Man Zarrko] Cluster health status changed from [RED] to [GREEN] (reason: [shards started [[knowledge][0]] ...]).

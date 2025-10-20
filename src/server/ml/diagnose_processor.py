@@ -9,7 +9,7 @@ load_dotenv()
 class DiagnoseProcessor:
     def __init__(self):
         # ES config
-        self.es_url = "http://localhost:9200/knowledge/_search"
+        self.es_url = "http://localhost:9201/knowledge/_search"
         
         # Gemini config
         api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")

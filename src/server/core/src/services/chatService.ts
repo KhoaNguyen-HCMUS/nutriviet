@@ -30,10 +30,10 @@ export class ChatService {
   constructor() {
     // FIX: Remove extra path if exists
     this.mlServiceUrl = process.env.ML_SERVICE_URL || 'http://localhost:8000';
-    
+
     // Clean up URL - remove trailing slash and extra paths
     this.mlServiceUrl = this.mlServiceUrl.replace(/\/+$/, '').replace('/predict-food101', '');
-    
+
     console.log('🔧 ML Service URL configured:', this.mlServiceUrl);
   }
 
@@ -79,6 +79,7 @@ Hãy mô tả các triệu chứng bạn đang gặp phải nhé!`,
   async sendMessage(request: SendMessageRequest): Promise<{
     messages: ChatMessage[];
     diagnosisContext?: any;
+    sessionTitle?: string | null
   }> {
     try {
       // Verify session ownership
@@ -95,7 +96,7 @@ Hãy mô tả các triệu chứng bạn đang gặp phải nhé!`,
 
       // Get last 10 messages for AI context (KEEP THIS)
       const contextMessages = await prisma.chat_messages.findMany({
-        where: { 
+        where: {
           session_id: BigInt(request.sessionId),
           role: { not: 'system' }
         },
@@ -128,6 +129,22 @@ Hãy mô tả các triệu chứng bạn đang gặp phải nhé!`,
         }
       });
 
+      const userMsgCount = await prisma.chat_messages.count({
+        where: {
+          session_id: BigInt(request.sessionId),
+          role: 'user'
+        }
+      })
+
+      if (!session.title  && userMsgCount === 1) {
+        await prisma.chat_sessions.update({
+          where: { id: BigInt(request.sessionId) },
+          data: {
+            title: fragmentTitle(request.userMessage, 50)
+          }
+        })
+      }
+
       // Call ML service with chat context
       let aiResponse: string;
       let diagnosisContext: any = null;
@@ -135,7 +152,7 @@ Hãy mô tả các triệu chứng bạn đang gặp phải nhé!`,
 
       try {
         console.log(`🤖 Calling ML service: ${this.mlServiceUrl}/api/chat`);
-        
+
         const mlResponse = await axios.post(`${this.mlServiceUrl}/api/chat`, {
           message: request.userMessage,
           chat_history: chatHistory,
@@ -159,10 +176,10 @@ Hãy mô tả các triệu chứng bạn đang gặp phải nhé!`,
           error: mlError.response?.data || mlError.message,
           status: mlError.response?.status
         });
-        
+
         // Fallback response
-        const hasSymptoms = chatHistory.some(msg => 
-          msg.includes('đau') || msg.includes('sốt') || msg.includes('mệt') || 
+        const hasSymptoms = chatHistory.some(msg =>
+          msg.includes('đau') || msg.includes('sốt') || msg.includes('mệt') ||
           msg.includes('khó thở') || msg.includes('chóng mặt')
         );
 
@@ -210,9 +227,14 @@ Hiện tại hệ thống gặp vấn đề kỹ thuật, nhưng dựa trên cu�
         meta: aiMessage.meta ? JSON.parse(aiMessage.meta as string) : undefined
       };
 
+      const updatedSession = await prisma.chat_sessions.findUnique({
+        where: { id: BigInt(request.sessionId) }
+      })
+
       return {
         messages: [formattedMessage],  // ✅ Only 1 AI response message
-        diagnosisContext
+        diagnosisContext,
+        sessionTitle: updatedSession?.title || null
       };
 
     } catch (error) {
@@ -263,7 +285,7 @@ Hiện tại hệ thống gặp vấn đề kỹ thuật, nhưng dựa trên cu�
   async getUserSessions(userId: string) {
     try {
       const sessions = await prisma.chat_sessions.findMany({
-        where: { 
+        where: {
           user_id: BigInt(userId),
           purpose: 'medical_diagnosis'
         },
@@ -271,6 +293,7 @@ Hiện tại hệ thống gặp vấn đề kỹ thuật, nhưng dựa trên cu�
         take: 20,
         select: {
           id: true,
+          title: true,
           purpose: true,
           started_at: true,
           ended_at: true,
@@ -285,6 +308,7 @@ Hiện tại hệ thống gặp vấn đề kỹ thuật, nhưng dựa trên cu�
 
       return sessions.map(session => ({
         session_id: session.id.toString(),
+        title: session.title || session.chat_messages[0]?.content || 'Untitled',
         purpose: session.purpose,
         started_at: session.started_at,
         ended_at: session.ended_at,
@@ -296,4 +320,10 @@ Hiện tại hệ thống gặp vấn đề kỹ thuật, nhưng dựa trên cu�
       throw error;
     }
   }
+
+}
+
+function fragmentTitle(text: string, limit = 50){
+  const clean = text.replace(/\s+/g, ' ').trim();
+  return clean.length > limit ? clean.substring(0, limit) + '...' : clean;
 }

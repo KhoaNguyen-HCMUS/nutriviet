@@ -228,6 +228,30 @@ export default function FoodRecognitionPage() {
         </div>
 
         {/* Camera/Upload Section */}
+
+        <div className='bg-info-bg border border-info-border rounded-lg p-6 mb-6'>
+          <div className='flex items-start'>
+            <div className='flex-shrink-0 p-2 bg-info rounded-lg'>
+              <FaInfoCircle className='text-info-foreground' />
+            </div>
+            <div className='ml-4'>
+              <h3 className='text-lg font-medium text-text-header'>Cách hoạt động</h3>
+              <ul className='mt-2 text-sm space-y-2'>
+                <li>1. Chụp ảnh hoặc tải lên hình ảnh món ăn của bạn</li>
+                <li>2. AI sẽ nhận diện món ăn và gợi ý các kết quả phù hợp</li>
+                <li>3. Chọn món ăn phù hợp nhất với bữa ăn của bạn</li>
+                <li>4. Chọn khẩu phần để có dữ liệu dinh dưỡng chính xác</li>
+                <li>5. Ghi nhận món ăn để theo dõi mục tiêu dinh dưỡng (cần đăng nhập)</li>
+              </ul>
+              <p className='mt-4 text-xs text-text-muted'>
+                Lưu ý: Độ chính xác nhận diện món ăn phụ thuộc vào chất lượng hình ảnh. Thêm gợi ý từ khóa để cải
+                thiện kết quả cho các món ăn không rõ ràng.
+              </p>
+            </div>
+          </div>
+        </div>
+
+
         <div className='bg-bg-card rounded-lg shadow-md p-6 mb-6 border-l-4 border-primary'>
           <div className='flex items-center mb-6'>
             <div className='p-2 bg-primary rounded-lg mr-3'>
@@ -388,11 +412,10 @@ export default function FoodRecognitionPage() {
                   {nutritionData.map((food) => (
                     <div
                       key={food.fdcId}
-                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${
-                        selectedFood?.fdcId === food.fdcId
+                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${selectedFood?.fdcId === food.fdcId
                           ? 'border-primary bg-primary bg-opacity-10 text-primary-contrast'
                           : 'border-border-light hover:border-primary hover:shadow-md text-text-body'
-                      }`}
+                        }`}
                       onClick={() => handleSelectFood(food)}
                     >
                       <div className='flex justify-between items-center'>
@@ -433,11 +456,10 @@ export default function FoodRecognitionPage() {
                         {nutritionDetails.portions.map((portion) => (
                           <div
                             key={portion.id}
-                            className={`p-3 rounded-md border cursor-pointer transition-colors ${
-                              selectedPortionId === portion.id
+                            className={`p-3 rounded-md border cursor-pointer transition-colors ${selectedPortionId === portion.id
                                 ? ' bg-accent/50 bg-opacity-10 text-primary'
                                 : 'border-border-light hover:border-primary'
-                            }`}
+                              }`}
                             onClick={() => setSelectedPortionId(portion.id)}
                           >
                             <div className='flex justify-between items-start'>
@@ -508,27 +530,7 @@ export default function FoodRecognitionPage() {
         )}
 
         {/* Information Card */}
-        <div className='bg-info-bg border border-info-border rounded-lg p-6 mb-6'>
-          <div className='flex items-start'>
-            <div className='flex-shrink-0 p-2 bg-info rounded-lg'>
-              <FaInfoCircle className='text-info-foreground' />
-            </div>
-            <div className='ml-4'>
-              <h3 className='text-lg font-medium text-text-header'>Cách hoạt động</h3>
-              <ul className='mt-2 text-sm space-y-2'>
-                <li>1. Chụp ảnh hoặc tải lên hình ảnh món ăn của bạn</li>
-                <li>2. AI sẽ nhận diện món ăn và gợi ý các kết quả phù hợp</li>
-                <li>3. Chọn món ăn phù hợp nhất với bữa ăn của bạn</li>
-                <li>4. Chọn khẩu phần để có dữ liệu dinh dưỡng chính xác</li>
-                <li>5. Ghi nhận món ăn để theo dõi mục tiêu dinh dưỡng (cần đăng nhập)</li>
-              </ul>
-              <p className='mt-4 text-xs text-text-muted'>
-                Lưu ý: Độ chính xác nhận diện món ăn phụ thuộc vào chất lượng hình ảnh. Thêm gợi ý từ khóa để cải
-                thiện kết quả cho các món ăn không rõ ràng.
-              </p>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );

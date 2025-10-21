@@ -16,6 +16,7 @@ const ChatContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Load sessions on component mount
@@ -82,6 +83,7 @@ const ChatContainer: React.FC = () => {
         lang: 'vi',
       };
 
+      setIsCreatingSession(true);
       const newSession = await ChatService.createSession(request);
       console.log('New session created:', newSession);
 
@@ -91,6 +93,8 @@ const ChatContainer: React.FC = () => {
       setMessages([]);
       setError(null);
 
+      await loadChatHistory(newSession.session_id);
+
       return newSession;
     } catch (error) {
       console.error('Failed to create session:', error);
@@ -98,6 +102,7 @@ const ChatContainer: React.FC = () => {
       return null
     } finally {
       setIsLoading(false);
+      setIsCreatingSession(false);
     }
   };
 
@@ -118,11 +123,12 @@ const ChatContainer: React.FC = () => {
 
       const sessionId = session.session_id;
 
+      const lastTurn = messages[messages.length - 1]?.turn_index || 0;
       // Add user message to UI immediately
       const userMessage: ChatMessage = {
         role: 'user',
         content,
-        turn_index: messages.length,
+        turn_index: lastTurn + 1,
         created_at: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, userMessage]);
@@ -133,16 +139,27 @@ const ChatContainer: React.FC = () => {
         content,
       });
 
-      // Replace messages with response from backend
-      if (Array.isArray(response.data.messages)) {
-        const newMessages = response.data.messages;
-      
-        if (newMessages.length === 1) {
-          setMessages(prev => [...prev, ...newMessages]); 
-        } else {
-          setMessages(newMessages); 
-        }
+      const aiMsgs = response.data?.messages ?? [];
+      if (aiMsgs.length) {
+        setMessages(prev => [...prev, ...aiMsgs]);
       }
+
+      const newTitle = (response as any).sessionTitle ?? response.sessionTitle ?? null
+      if (newTitle) {
+        setCurrentSession(prev => prev ? { ...prev, title: newTitle } : prev);
+        setSessions(prev =>
+          prev.map(s => s.session_id === sessionId ? { ...s, title: newTitle } : s)
+        );
+      }
+      // if (Array.isArray(response.data.messages)) {
+      //   const newMessages = response.data.messages;
+      
+      //   if (newMessages.length === 1) {
+      //     setMessages(prev => [...prev, ...newMessages]); 
+      //   } else {
+      //     setMessages(newMessages); 
+      //   }
+      // }
 
       // Scroll to bottom
       ChatUtils.scrollToBottom('messages-container');
@@ -169,20 +186,20 @@ const ChatContainer: React.FC = () => {
   };
 
   return (
-    <div className='flex h-screen bg-linear-(--gradient-primary) overflow-hidden'>
+    <div className='flex h-screen overflow-hidden'>
       {/* Session Sidebar */}
       <SessionSidebar
         sessions={sessions}
         currentSessionId={currentSession?.session_id || null}
         onSelectSession={selectSession}
         onNewSession={createNewSession}
-        isLoading={isLoadingSessions}
+        isLoading={isCreatingSession}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
 
       {/* Main Chat Area */}
-      <div className='flex-1 flex flex-col min-w-0 relative bg-bg'>
+      <div className='flex-1 flex flex-col min-w-0 relative '>
         {/* Chat Header */}
         <ChatHeader
           currentSession={currentSession}

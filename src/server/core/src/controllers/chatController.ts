@@ -140,7 +140,8 @@ export class ChatController {
         data: {
           session_id,
           messages: result.messages,
-          diagnosis_context: result.diagnosisContext
+          diagnosis_context: result.diagnosisContext,
+          session_title: result.sessionTitle,
         }
       });
 

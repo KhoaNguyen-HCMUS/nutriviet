@@ -27,6 +27,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@google-cloud/translate": "^9.2.1",
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "6.16.2",
     "axios": "^1.12.2",

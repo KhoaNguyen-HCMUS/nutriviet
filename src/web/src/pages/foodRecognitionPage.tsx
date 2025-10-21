@@ -244,13 +244,12 @@ export default function FoodRecognitionPage() {
                 <li>5. Ghi nhận món ăn để theo dõi mục tiêu dinh dưỡng (cần đăng nhập)</li>
               </ul>
               <p className='mt-4 text-xs text-text-muted'>
-                Lưu ý: Độ chính xác nhận diện món ăn phụ thuộc vào chất lượng hình ảnh. Thêm gợi ý từ khóa để cải
-                thiện kết quả cho các món ăn không rõ ràng.
+                Lưu ý: Độ chính xác nhận diện món ăn phụ thuộc vào chất lượng hình ảnh. Thêm gợi ý từ khóa để cải thiện
+                kết quả cho các món ăn không rõ ràng.
               </p>
             </div>
           </div>
         </div>
-
 
         <div className='bg-bg-card rounded-lg shadow-md p-6 mb-6 border-l-4 border-primary'>
           <div className='flex items-center mb-6'>
@@ -398,7 +397,15 @@ export default function FoodRecognitionPage() {
                 <div>
                   <p className='font-semibold'>Dự đoán hàng đầu: {topPrediction}</p>
                   <p className='text-sm'>
-                    Độ tin cậy: {topPrediction && predictions ? (predictions[topPrediction] * 100).toFixed(1) : 0}%
+                    Độ tin cậy:{' '}
+                    {topPrediction && predictions
+                      ? (() => {
+                          // Tìm confidence score cao nhất từ predictions object
+                          const confidenceScore = Math.max(...Object.values(predictions));
+                          return (confidenceScore * 100).toFixed(1);
+                        })()
+                      : 0}
+                    %
                   </p>
                 </div>
               </div>
@@ -412,10 +419,11 @@ export default function FoodRecognitionPage() {
                   {nutritionData.map((food) => (
                     <div
                       key={food.fdcId}
-                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${selectedFood?.fdcId === food.fdcId
+                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${
+                        selectedFood?.fdcId === food.fdcId
                           ? 'border-primary bg-primary bg-opacity-10 text-primary-contrast'
                           : 'border-border-light hover:border-primary hover:shadow-md text-text-body'
-                        }`}
+                      }`}
                       onClick={() => handleSelectFood(food)}
                     >
                       <div className='flex justify-between items-center'>
@@ -456,10 +464,11 @@ export default function FoodRecognitionPage() {
                         {nutritionDetails.portions.map((portion) => (
                           <div
                             key={portion.id}
-                            className={`p-3 rounded-md border cursor-pointer transition-colors ${selectedPortionId === portion.id
+                            className={`p-3 rounded-md border cursor-pointer transition-colors ${
+                              selectedPortionId === portion.id
                                 ? ' bg-accent/50 bg-opacity-10 text-primary'
                                 : 'border-border-light hover:border-primary'
-                              }`}
+                            }`}
                             onClick={() => setSelectedPortionId(portion.id)}
                           >
                             <div className='flex justify-between items-start'>
@@ -530,7 +539,6 @@ export default function FoodRecognitionPage() {
         )}
 
         {/* Information Card */}
-
       </div>
     </div>
   );

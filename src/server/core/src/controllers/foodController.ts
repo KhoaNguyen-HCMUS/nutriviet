@@ -400,6 +400,7 @@ export class FoodController {
           data: {
             user_id: BigInt(userId),
             food_id: foodEntry.id,
+            name: food.description,
             qty_grams: portionGrams,
             kcal_snapshot: actualKcal,
             protein_snapshot: actualProtein,

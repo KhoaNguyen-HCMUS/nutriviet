@@ -62,21 +62,24 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
     }
   };
 
-  const getWeightChangeIcon = (change: number) => {
-    if (change > 0) return <FaArrowUp className='text-red-500' />;
-    if (change < 0) return <FaArrowDown className='text-green-500' />;
+  const getWeightChangeIcon = (change: string) => {
+    const changeNum = parseFloat(change);
+    if (changeNum > 0) return <FaArrowUp className='text-red-500' />;
+    if (changeNum < 0) return <FaArrowDown className='text-green-500' />;
     return <FaMinus className='text-text-body' />;
   };
 
-  const getWeightChangeColor = (change: number) => {
-    if (change > 0) return 'text-red-500';
-    if (change < 0) return 'text-green-500';
+  const getWeightChangeColor = (change: string) => {
+    const changeNum = parseFloat(change);
+    if (changeNum > 0) return 'text-red-500';
+    if (changeNum < 0) return 'text-green-500';
     return 'text-text-body';
   };
 
-  const formatWeightChange = (change: number) => {
-    const sign = change > 0 ? '+' : '';
-    return `${sign}${change.toFixed(1)}kg`;
+  const formatWeightChange = (change: string, unit: string) => {
+    const changeNum = parseFloat(change);
+    const sign = changeNum > 0 ? '+' : '';
+    return `${sign}${change}${unit}`;
   };
 
   return (
@@ -90,7 +93,7 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
         </div>
         <div className='flex items-center text-sm text-text-body'>
           <FaTrophy className='mr-1 text-warning' />
-          <span>{snapshot.streak} ngày liên tiếp</span>
+          <span>7 ngày liên tiếp</span>
         </div>
       </div>
 
@@ -98,14 +101,14 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
         <div className='flex items-center space-x-3'>
           {/* BMI */}
           <div
-            className={`flex items-center justify-center w-12 h-12 rounded-full ${getBMIBgColor(snapshot.bmiCategory)}`}
+            className={`flex items-center justify-center w-12 h-12 rounded-full ${getBMIBgColor(snapshot.bmi.status)}`}
           >
-            <span className={`text-xl font-bold ${getBMIColor(snapshot.bmiCategory)}`}>{snapshot.bmi.toFixed(1)}</span>
+            <span className={`text-xl font-bold ${getBMIColor(snapshot.bmi.status)}`}>{snapshot.bmi.value}</span>
           </div>
           <div>
             <h3 className='text-sm font-medium text-text-body'>BMI</h3>
-            <p className={`text-xs font-medium capitalize ${getBMIColor(snapshot.bmiCategory)}`}>
-              {snapshot.bmiCategory}
+            <p className={`text-xs font-medium capitalize ${getBMIColor(snapshot.bmi.status)}`}>
+              {snapshot.bmi.status}
             </p>
           </div>
         </div>
@@ -117,20 +120,22 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
           </div>
           <div>
             <h3 className='text-sm font-medium text-text-body'>Cân nặng hiện tại</h3>
-            <p className='text-sm font-bold text-text-header'>{snapshot.currentWeight.toFixed(1)}kg</p>
+            <p className='text-sm font-bold text-text-header'>
+              {snapshot.currentWeight.value}
+              {snapshot.currentWeight.unit}
+            </p>
           </div>
         </div>
 
         {/* Goal */}
         <div className='flex items-center space-x-3'>
           <div className='flex items-center justify-center w-12 h-12 bg-bg-muted rounded-full'>
-            {getGoalIcon(snapshot.goal)}
+            {getGoalIcon(snapshot.goal.type)}
           </div>
           <div>
             <h3 className='text-sm font-medium text-text-body'>Mục tiêu</h3>
-            <p className={`text-xs font-medium capitalize ${getGoalColor(snapshot.goal)}`}>
-              {snapshot.goal === 'lose' ? 'giảm cân' : snapshot.goal === 'gain' ? 'tăng cân' : 'duy trì cân nặng'}
-              {snapshot.targetWeight && ` (${snapshot.targetWeight.toFixed(1)}kg)`}
+            <p className={`text-xs font-medium capitalize ${getGoalColor(snapshot.goal.type)}`}>
+              {snapshot.goal.label}
             </p>
           </div>
         </div>
@@ -138,12 +143,12 @@ export default function HealthSnapshot({ snapshot }: HealthSnapshotProps) {
         {/* Weight Change */}
         <div className='flex items-center space-x-3'>
           <div className='flex items-center justify-center w-12 h-12 bg-bg-muted rounded-full'>
-            {getWeightChangeIcon(snapshot.weightChange)}
+            {getWeightChangeIcon(snapshot.thisWeek.change)}
           </div>
           <div>
             <h3 className='text-sm font-medium text-text-body'>Tuần này</h3>
-            <p className={`text-xs font-medium ${getWeightChangeColor(snapshot.weightChange)}`}>
-              {formatWeightChange(snapshot.weightChange)}
+            <p className={`text-xs font-medium ${getWeightChangeColor(snapshot.thisWeek.change)}`}>
+              {formatWeightChange(snapshot.thisWeek.change, snapshot.thisWeek.unit)}
             </p>
           </div>
         </div>

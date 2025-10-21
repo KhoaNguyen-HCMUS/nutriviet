@@ -1,43 +1,51 @@
 export interface DashboardData {
   healthSnapshot: HealthSnapshot;
-  todayProgress: TodayProgress;
-  todayMeals: TodayMeal[];
-  quickActions: QuickAction[];
-  trends: TrendsData;
+  todaysProgress: TodayProgress;
+  todaysMeals: TodayMeals;
+  trendsAnalytics: TrendsAnalytics;
   lastUpdated: Date;
 }
 
 export interface HealthSnapshot {
-  bmi: number;
-  bmiCategory: 'underweight' | 'normal' | 'overweight' | 'obese';
-  goal: 'lose' | 'maintain' | 'gain';
-  targetWeight?: number;
-  currentWeight: number;
-  weightChange: number; // kg change from last week
-  streak: number; // days of logging
+  bmi: {
+    value: string;
+    status: string;
+  };
+  currentWeight: {
+    value: string;
+    unit: string;
+  };
+  goal: {
+    type: string;
+    label: string;
+  };
+  thisWeek: {
+    change: string;
+    unit: string;
+  };
 }
 
 export interface TodayProgress {
   calories: {
-    consumed: number;
+    current: number;
     target: number;
+    percentage: number;
     remaining: number;
+  };
+  protein: {
+    current: number;
+    target: number;
     percentage: number;
   };
-  macros: {
-    protein: MacroProgress;
-    carbohydrates: MacroProgress;
-    fat: MacroProgress;
-    fiber: MacroProgress;
-  };
-  water: {
-    consumed: number; // ml
-    target: number; // ml
+  carbohydrates: {
+    current: number;
+    target: number;
     percentage: number;
   };
-  exercise: {
-    minutes: number;
-    caloriesBurned: number;
+  fat: {
+    current: number;
+    target: number;
+    percentage: number;
   };
 }
 
@@ -45,6 +53,19 @@ export interface MacroProgress {
   consumed: number; // grams
   target: number; // grams
   percentage: number;
+}
+
+export interface TodayMeals {
+  totalCalories: number;
+  breakfast: MealSection;
+  lunch: MealSection;
+  dinner: MealSection;
+}
+
+export interface MealSection {
+  items: number;
+  totalCalories: number;
+  meals: any[];
 }
 
 export interface TodayMeal {
@@ -72,6 +93,27 @@ export interface QuickAction {
   icon: string;
   color: string;
   action: () => void;
+}
+
+export interface TrendsAnalytics {
+  period: string;
+  days: string[];
+  calories: {
+    data: number[];
+    total: number;
+    average: number;
+    peak: number;
+    low: number;
+    target: number;
+  };
+  weight: {
+    data: number[];
+  };
+  macros: {
+    protein: number[];
+    carbs: number[];
+    fat: number[];
+  };
 }
 
 export interface TrendsData {

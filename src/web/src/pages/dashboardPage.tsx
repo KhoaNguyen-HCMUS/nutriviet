@@ -10,12 +10,15 @@ import TrendsChart from '../components/dashboard/trendsChart';
 import { FaHome, FaInfoCircle } from 'react-icons/fa';
 import { HealthService } from '../services/dashboard';
 import { getProfile } from '../services/profile';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [healthProfile, setHealthProfile] = useState<Partial<HealthProfile> | null>(null);
+  const navigate = useNavigate();
+
+  const [, setHealthProfile] = useState<Partial<HealthProfile> | null>(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -32,9 +35,6 @@ export default function DashboardPage() {
       const p = profileResp.data.profile;
       const weight = parseFloat(p.weight_kg || '0') || 0;
       const height = parseFloat(p.height_cm || '0') || 0;
-      const bmi = parseFloat(p.bmi || '0') || 0;
-      const bmr = parseFloat(p.bmr || '0') || 0;
-      const tdee = parseFloat(p.tdee || '0') || 0;
 
       const gp: HealthProfile = {
         userId: '',
@@ -57,49 +57,18 @@ export default function DashboardPage() {
 
       setHealthProfile(gp);
 
-      const base = await HealthService.fetchDashboardData(gp);
-
-      const bmiCategory = (() => {
-        if (bmi < 18.5) return 'underweight';
-        if (bmi < 25) return 'normal';
-        if (bmi < 30) return 'overweight';
-        return 'obese';
-      })();
-
-      const merged: DashboardData = {
-        ...base,
-        healthSnapshot: {
-          bmi,
-          bmiCategory,
-          goal: gp.goals.primary,
-          targetWeight: undefined,
-          currentWeight: weight,
-          weightChange: base.healthSnapshot.weightChange,
-          streak: base.healthSnapshot.streak,
-        },
-        todayProgress: {
-          ...base.todayProgress,
-          calories: {
-            consumed: base.todayProgress.calories.consumed,
-            target: tdee || base.todayProgress.calories.target,
-            remaining: (tdee || base.todayProgress.calories.target) - base.todayProgress.calories.consumed,
-            percentage: (base.todayProgress.calories.consumed / (tdee || base.todayProgress.calories.target)) * 100,
-          },
-        },
-      };
-
-      setDashboardData(merged);
+      const dashboardData = await HealthService.fetchDashboardData(gp);
+      setDashboardData(dashboardData);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      toast.error('Không thể tải dữ liệu bảng điều khiển');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleScan = () => {
-    toast.info('Camera scan feature coming soon!');
-    // In real app, this would open camera and process food image
+    navigate('/food-recognition');
   };
 
   const handleAddMeal = (mealType?: string) => {
@@ -108,12 +77,10 @@ export default function DashboardPage() {
     } else {
       toast.info('Add meal feature coming soon!');
     }
-    // In real app, this would open meal logging form
   };
 
   const handleEditMeal = (mealId: string) => {
     toast.info(`Editing meal ${mealId}...`);
-    // In real app, this would open meal editing form
   };
 
   if (isLoading) {
@@ -151,7 +118,7 @@ export default function DashboardPage() {
       description: 'Chụp ảnh để nhận diện thực phẩm và dinh dưỡng',
       icon: 'camera',
       color: 'blue',
-      action: handleScan,
+      action: () => navigate('/food-recognition'),
     },
     {
       id: 'edit_profile',
@@ -160,7 +127,7 @@ export default function DashboardPage() {
       description: 'Cập nhật hồ sơ sức khỏe và tùy chọn của bạn',
       icon: 'user-edit',
       color: 'green',
-      action: () => toast.info('Tính năng chỉnh sửa hồ sơ sắp ra mắt!'),
+      action: () => navigate('/profile'),
     },
   ];
 
@@ -193,31 +160,26 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Main Dashboard Grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6'>
-          {/* Health Snapshot - 2/3 width */}
           <div className='md:col-span-1 lg:col-span-2'>
             <HealthSnapshot snapshot={dashboardData.healthSnapshot} />
           </div>
 
-          {/* Quick Actions - 1/3 width */}
           <div>
             <QuickActions actions={quickActions} onScan={handleScan} />
           </div>
 
-          {/* Today's Progress and Today's Meals side-by-side */}
           <div className='md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6'>
             <div>
-              <ProgressTracker progress={dashboardData.todayProgress} />
+              <ProgressTracker progress={dashboardData.todaysProgress} />
             </div>
             <div>
-              <TodayMeals meals={dashboardData.todayMeals} onAddMeal={handleAddMeal} onEditMeal={handleEditMeal} />
+              <TodayMeals meals={dashboardData.todaysMeals} onAddMeal={handleAddMeal} onEditMeal={handleEditMeal} />
             </div>
           </div>
         </div>
 
-        {/* Trends Chart - Full width */}
-        <TrendsChart trends={dashboardData.trends} />
+        <TrendsChart trends={dashboardData.trendsAnalytics} />
       </div>
     </div>
   );

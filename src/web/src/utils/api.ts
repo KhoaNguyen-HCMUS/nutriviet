@@ -1,18 +1,18 @@
-import { getToken } from "./authStorage";
+import { getToken } from './authStorage';
 
 export async function request<TBody extends object, TResp>(
-	method: "POST" | "GET" | "PUT" | "PATCH" | "DELETE",
-	path: string,
-	body?: TBody
+  method: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE',
+  path: string,
+  body?: TBody
 ): Promise<TResp> {
-	const API_BASE = (import.meta).env?.VITE_API_URL || "";
-	const res = await fetch(`${API_BASE}${path}`, {
-		method,
-		headers: { "Content-Type": "application/json" },
-		body: body ? JSON.stringify(body) : undefined,
-	});
-	const json = await res.json();
-	return json as TResp;
+  const API_BASE = import.meta.env?.VITE_API_URL || '';
+  const res = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const json = await res.json();
+  return json as TResp;
 }
 
 export const requestAuth = async <TResponse, TRequest = any>(
@@ -20,18 +20,18 @@ export const requestAuth = async <TResponse, TRequest = any>(
   endpoint: string,
   data?: TRequest
 ): Promise<TResponse> => {
-  const API_BASE = (import.meta).env?.VITE_API_URL || "";
-  
+  const API_BASE = import.meta.env?.VITE_API_URL || '';
+
   // Get token from localStorage
-  const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-  
+  const token = getToken();
+
   console.log('🔐 API Request - Token:', token ? 'Present' : 'Missing');
   console.log('🔐 API Request - Endpoint:', `${API_BASE}${endpoint}`);
-  
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
-  
+
   // Add Authorization header if token exists
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
@@ -51,9 +51,9 @@ export const requestAuth = async <TResponse, TRequest = any>(
 
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, config);
-    
+
     console.log('📡 API Response status:', response.status);
-    
+
     if (!response.ok) {
       if (response.status === 401) {
         console.error('❌ 401 Unauthorized - clearing tokens');

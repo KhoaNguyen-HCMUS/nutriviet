@@ -9,12 +9,12 @@ import {
   FaCheese,
   FaChartLine,
 } from 'react-icons/fa';
-import type { TrendsData } from '../../types/dashboard';
+import type { TrendsAnalytics } from '../../types/dashboard';
 import BarChartComponent from './barChartComponent';
 import { normalizeChartData, calculateMaxValue, calculateMinValue, formatDateLabel } from '../../utils/chartData.utils';
 
 interface TrendsChartProps {
-  trends: TrendsData;
+  trends: TrendsAnalytics;
 }
 
 export default function TrendsChart({ trends }: TrendsChartProps) {
@@ -68,13 +68,35 @@ export default function TrendsChart({ trends }: TrendsChartProps) {
   const getCurrentData = () => {
     switch (selectedMetric) {
       case 'calories':
-        return trends.calories;
+        if (!trends.calories?.data) return [];
+        return trends.calories.data.map((value, index) => ({
+          date: new Date(Date.now() - (trends.calories.data.length - 1 - index) * 24 * 60 * 60 * 1000),
+          value: value,
+          target: trends.calories.target,
+        }));
       case 'weight':
-        return trends.weight;
+        if (!trends.weight?.data) return [];
+        return trends.weight.data.map((value, index) => ({
+          date: new Date(Date.now() - (trends.weight.data.length - 1 - index) * 24 * 60 * 60 * 1000),
+          value: value,
+          target: 70, // Default target weight
+        }));
       case 'macros':
-        return trends.macros[selectedMacro];
+        const macroKey = selectedMacro === 'carbohydrates' ? 'carbs' : selectedMacro;
+        const macroData = trends.macros?.[macroKey];
+        if (!macroData) return [];
+        return macroData.map((value, index) => ({
+          date: new Date(Date.now() - (macroData.length - 1 - index) * 24 * 60 * 60 * 1000),
+          value: value,
+          target: 100, // Default macro target
+        }));
       default:
-        return trends.calories;
+        if (!trends.calories?.data) return [];
+        return trends.calories.data.map((value, index) => ({
+          date: new Date(Date.now() - (trends.calories.data.length - 1 - index) * 24 * 60 * 60 * 1000),
+          value: value,
+          target: trends.calories.target,
+        }));
     }
   };
 
@@ -234,9 +256,22 @@ export default function TrendsChart({ trends }: TrendsChartProps) {
   // Pie Chart for Macro Distribution (shows current day's macro breakdown)
   const renderPieChart = () => {
     const todayData = trends.macros;
-    const totalProtein = todayData.protein.reduce((sum, point) => sum + point.value, 0);
-    const totalCarbs = todayData.carbohydrates.reduce((sum, point) => sum + point.value, 0);
-    const totalFat = todayData.fat.reduce((sum, point) => sum + point.value, 0);
+
+    // Safety checks to prevent undefined errors
+    if (!todayData || !todayData.protein || !todayData.carbs || !todayData.fat) {
+      return (
+        <div className='flex items-center justify-center h-48 bg-bg-muted rounded-lg'>
+          <div className='text-center'>
+            <FaChartPie className='text-4xl text-text-muted mx-auto mb-2' />
+            <p className='text-text-body'>Không có dữ liệu</p>
+          </div>
+        </div>
+      );
+    }
+
+    const totalProtein = todayData.protein.reduce((sum, value) => sum + value, 0);
+    const totalCarbs = todayData.carbs.reduce((sum, value) => sum + value, 0);
+    const totalFat = todayData.fat.reduce((sum, value) => sum + value, 0);
     const total = totalProtein + totalCarbs + totalFat;
 
     if (total === 0) {
@@ -415,27 +450,58 @@ export default function TrendsChart({ trends }: TrendsChartProps) {
       <div className='grid grid-cols-4 gap-2 mt-3'>
         <div className='text-center'>
           <div className='text-base font-bold text-gray-900 dark:text-white'>
-            {getCurrentData()
-              .reduce((sum, point) => sum + point.value, 0)
-              .toFixed(0)}
+            {selectedMetric === 'calories'
+              ? (trends.calories?.total || 0).toFixed(0)
+              : selectedMetric === 'weight'
+              ? (trends.weight?.data?.reduce((sum, val) => sum + val, 0) || 0).toFixed(0)
+              : (
+                  trends.macros?.[selectedMacro === 'carbohydrates' ? 'carbs' : selectedMacro]?.reduce(
+                    (sum, val) => sum + val,
+                    0
+                  ) || 0
+                ).toFixed(0)}
           </div>
           <div className='text-xs text-gray-600 dark:text-gray-400'>Tổng</div>
         </div>
         <div className='text-center'>
           <div className='text-base font-bold text-purple-600 dark:text-purple-400'>
-            {(getCurrentData().reduce((sum, point) => sum + point.value, 0) / getCurrentData().length).toFixed(0)}
+            {selectedMetric === 'calories'
+              ? (trends.calories?.average || 0).toFixed(0)
+              : selectedMetric === 'weight'
+              ? (trends.weight?.data?.length
+                  ? trends.weight.data.reduce((sum, val) => sum + val, 0) / trends.weight.data.length
+                  : 0
+                ).toFixed(0)
+              : (() => {
+                  const macroData = trends.macros?.[selectedMacro === 'carbohydrates' ? 'carbs' : selectedMacro];
+                  return macroData?.length ? macroData.reduce((sum, val) => sum + val, 0) / macroData.length : 0;
+                })().toFixed(0)}
           </div>
           <div className='text-xs text-gray-600 dark:text-gray-400'>Trung bình</div>
         </div>
         <div className='text-center'>
           <div className='text-base font-bold text-orange-500'>
-            {Math.max(...getCurrentData().map((d) => d.value)).toFixed(0)}
+            {selectedMetric === 'calories'
+              ? (trends.calories?.peak || 0).toFixed(0)
+              : selectedMetric === 'weight'
+              ? (trends.weight?.data?.length ? Math.max(...trends.weight.data) : 0).toFixed(0)
+              : (() => {
+                  const macroData = trends.macros?.[selectedMacro === 'carbohydrates' ? 'carbs' : selectedMacro];
+                  return macroData?.length ? Math.max(...macroData) : 0;
+                })().toFixed(0)}
           </div>
           <div className='text-xs text-gray-600 dark:text-gray-400'>Cao nhất</div>
         </div>
         <div className='text-center'>
           <div className='text-base font-bold text-blue-500'>
-            {Math.min(...getCurrentData().map((d) => d.value)).toFixed(0)}
+            {selectedMetric === 'calories'
+              ? (trends.calories?.low || 0).toFixed(0)
+              : selectedMetric === 'weight'
+              ? (trends.weight?.data?.length ? Math.min(...trends.weight.data) : 0).toFixed(0)
+              : (() => {
+                  const macroData = trends.macros?.[selectedMacro === 'carbohydrates' ? 'carbs' : selectedMacro];
+                  return macroData?.length ? Math.min(...macroData) : 0;
+                })().toFixed(0)}
           </div>
           <div className='text-xs text-gray-600 dark:text-gray-400'>Thấp nhất</div>
         </div>

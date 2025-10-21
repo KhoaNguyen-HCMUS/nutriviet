@@ -20,36 +20,6 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
     return 'bg-red-500';
   };
 
-  const getMacroIcon = (macro: string) => {
-    switch (macro) {
-      case 'protein':
-        return <FaDrumstickBite className='text-red-500' />;
-      case 'carbohydrates':
-        return <FaBreadSlice className='text-blue-500' />;
-      case 'fat':
-        return <FaCheese className='text-yellow-500' />;
-      case 'fiber':
-        return <FaLeaf className='text-green-500' />;
-      default:
-        return <FaFire className='text-text-body' />;
-    }
-  };
-
-  const getMacroColor = (macro: string) => {
-    switch (macro) {
-      case 'protein':
-        return 'text-red-500';
-      case 'carbohydrates':
-        return 'text-blue-500';
-      case 'fat':
-        return 'text-yellow-500';
-      case 'fiber':
-        return 'text-green-500';
-      default:
-        return 'text-text-body';
-    }
-  };
-
   return (
     <div className='bg-bg-card rounded-lg shadow-md p-5'>
       <div className='flex items-center mb-4'>
@@ -68,7 +38,7 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
           </div>
           <div className='text-right'>
             <span className={`text-xl font-bold ${getProgressColor(progress.calories.percentage)}`}>
-              {progress.calories.consumed}
+              {progress.calories.current}
             </span>
             <span className='text-text-body'> / {progress.calories.target}</span>
           </div>
@@ -95,44 +65,65 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
 
       {/* Macros - stack vertically */}
       <div className='flex flex-col gap-3'>
-        {(['protein', 'carbohydrates', 'fat', 'fiber'] as const).map((macroKey) => {
-          const data = progress.macros[macroKey];
-          const macro = macroKey as unknown as string;
-          return (
-            <div key={macro} className='bg-bg rounded-lg p-3 border border-border-light'>
-              <div className='flex items-center justify-between mb-1.5'>
-                <div className='flex items-center'>
-                  {getMacroIcon(macro)}
-                  <span className='ml-1.5 text-xs font-medium text-text-body capitalize'>
-                    {macro === 'protein'
-                      ? 'Protein'
-                      : macro === 'carbohydrates'
-                      ? 'Carb'
-                      : macro === 'fat'
-                      ? 'Chất béo'
-                      : macro === 'fiber'
-                      ? 'Chất xơ'
-                      : macro}
-                  </span>
-                </div>
-                <span className={`text-xs font-bold ${getMacroColor(macro)}`}>{data.consumed}g</span>
-              </div>
-              <div className='w-full bg-bg-muted rounded-full h-1.5 mb-1'>
-                <div
-                  className={`h-1.5 rounded-full transition-all duration-300 ${getMacroColor(macro).replace(
-                    'text-',
-                    'bg-'
-                  )}`}
-                  style={{ width: `${Math.min(100, data.percentage)}%` }}
-                ></div>
-              </div>
-              <div className='flex justify-between text-xs text-text-body'>
-                <span>{data.percentage.toFixed(0)}%</span>
-                <span>{data.target}g</span>
-              </div>
+        <div className='bg-bg rounded-lg p-3 border border-border-light'>
+          <div className='flex items-center justify-between mb-1.5'>
+            <div className='flex items-center'>
+              <FaDrumstickBite className='text-red-500' />
+              <span className='ml-1.5 text-xs font-medium text-text-body'>Protein</span>
             </div>
-          );
-        })}
+            <span className='text-xs font-bold text-red-500'>{progress.protein.current}g</span>
+          </div>
+          <div className='w-full bg-bg-muted rounded-full h-1.5 mb-1'>
+            <div
+              className='h-1.5 rounded-full transition-all duration-300 bg-red-500'
+              style={{ width: `${Math.min(100, progress.protein.percentage)}%` }}
+            ></div>
+          </div>
+          <div className='flex justify-between text-xs text-text-body'>
+            <span>{progress.protein.percentage.toFixed(0)}%</span>
+            <span>{progress.protein.target}g</span>
+          </div>
+        </div>
+
+        <div className='bg-bg rounded-lg p-3 border border-border-light'>
+          <div className='flex items-center justify-between mb-1.5'>
+            <div className='flex items-center'>
+              <FaBreadSlice className='text-blue-500' />
+              <span className='ml-1.5 text-xs font-medium text-text-body'>Carb</span>
+            </div>
+            <span className='text-xs font-bold text-blue-500'>{progress.carbohydrates.current}g</span>
+          </div>
+          <div className='w-full bg-bg-muted rounded-full h-1.5 mb-1'>
+            <div
+              className='h-1.5 rounded-full transition-all duration-300 bg-blue-500'
+              style={{ width: `${Math.min(100, progress.carbohydrates.percentage)}%` }}
+            ></div>
+          </div>
+          <div className='flex justify-between text-xs text-text-body'>
+            <span>{progress.carbohydrates.percentage.toFixed(0)}%</span>
+            <span>{progress.carbohydrates.target}g</span>
+          </div>
+        </div>
+
+        <div className='bg-bg rounded-lg p-3 border border-border-light'>
+          <div className='flex items-center justify-between mb-1.5'>
+            <div className='flex items-center'>
+              <FaCheese className='text-yellow-500' />
+              <span className='ml-1.5 text-xs font-medium text-text-body'>Chất béo</span>
+            </div>
+            <span className='text-xs font-bold text-yellow-500'>{progress.fat.current}g</span>
+          </div>
+          <div className='w-full bg-bg-muted rounded-full h-1.5 mb-1'>
+            <div
+              className='h-1.5 rounded-full transition-all duration-300 bg-yellow-500'
+              style={{ width: `${Math.min(100, progress.fat.percentage)}%` }}
+            ></div>
+          </div>
+          <div className='flex justify-between text-xs text-text-body'>
+            <span>{progress.fat.percentage.toFixed(0)}%</span>
+            <span>{progress.fat.target}g</span>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import { FaApple, FaUtensils, FaDrumstickBite, FaLeaf, FaPlus, FaCamera, FaClock, FaCheckCircle } from 'react-icons/fa';
-import type { TodayMeal } from '../../types/dashboard';
+import type { TodayMeals as TodayMealsType } from '../../types/dashboard';
 
 interface TodayMealsProps {
-  meals: TodayMeal[];
+  meals: TodayMealsType;
   onAddMeal: (mealType: string) => void;
   onEditMeal: (mealId: string) => void;
 }
@@ -59,15 +59,11 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
     });
   };
 
-  const getMealsByType = (type: string) => {
-    return meals.filter((meal) => meal.type === type);
-  };
-
-  const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
-
-  const getTotalCaloriesForType = (type: string) => {
-    return getMealsByType(type).reduce((sum, meal) => sum + meal.calories, 0);
-  };
+  const mealTypes = [
+    { key: 'breakfast', label: 'Sáng', data: meals.breakfast },
+    { key: 'lunch', label: 'Trưa', data: meals.lunch },
+    { key: 'dinner', label: 'Tối', data: meals.dinner },
+  ];
 
   return (
     <div className='bg-bg-card rounded-lg shadow-md p-5'>
@@ -78,50 +74,41 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
           </div>
           <h2 className='text-lg font-semibold text-text-header'>Bữa ăn hôm nay</h2>
         </div>
-        <div className='text-sm text-text-body'>Tổng: {meals.reduce((sum, meal) => sum + meal.calories, 0)} cal</div>
+        <div className='text-sm text-text-body'>Tổng: {meals.totalCalories} cal</div>
       </div>
 
       <div className='space-y-3'>
         {mealTypes.map((mealType) => {
-          const typeMeals = getMealsByType(mealType);
-          const totalCalories = getTotalCaloriesForType(mealType);
+          const mealData = mealType.data;
+          const totalCalories = mealData.totalCalories;
+          const itemsCount = mealData.items;
 
           return (
-            <div key={mealType} className='border border-border-light rounded-lg p-3'>
+            <div key={mealType.key} className='border border-border-light rounded-lg p-3'>
               {/* Meal Type Header */}
               <div className='flex items-center justify-between mb-2'>
                 <div className='flex items-center'>
-                  {getMealTypeIcon(mealType)}
-                  <h3 className='ml-2 text-sm font-semibold text-text-header capitalize'>
-                    {mealType === 'breakfast'
-                      ? 'Sáng'
-                      : mealType === 'lunch'
-                      ? 'Trưa'
-                      : mealType === 'dinner'
-                      ? 'Tối'
-                      : mealType === 'snack'
-                      ? 'Ăn vặt'
-                      : mealType}
-                  </h3>
-                  <span className={`ml-2 px-1.5 py-0.5 rounded-full text-xs font-medium ${getMealTypeColor(mealType)}`}>
-                    {typeMeals.length} món
+                  {getMealTypeIcon(mealType.key)}
+                  <h3 className='ml-2 text-sm font-semibold text-text-header'>{mealType.label}</h3>
+                  <span
+                    className={`ml-2 px-1.5 py-0.5 rounded-full text-xs font-medium ${getMealTypeColor(mealType.key)}`}
+                  >
+                    {itemsCount} món
                   </span>
                 </div>
                 <div className='flex items-center space-x-2'>
                   <span className='text-xs font-medium text-text-body'>{totalCalories} cal</span>
                   <button
-                    onClick={() => onAddMeal(mealType)}
+                    onClick={() => onAddMeal(mealType.key)}
                     className='p-1 text-primary hover:bg-primary/10 rounded-lg transition-colors'
                     title={`Thêm ${
-                      mealType === 'breakfast'
+                      mealType.key === 'breakfast'
                         ? 'bữa sáng'
-                        : mealType === 'lunch'
+                        : mealType.key === 'lunch'
                         ? 'bữa trưa'
-                        : mealType === 'dinner'
+                        : mealType.key === 'dinner'
                         ? 'bữa tối'
-                        : mealType === 'snack'
-                        ? 'đồ ăn vặt'
-                        : mealType
+                        : mealType.key
                     }`}
                   >
                     <FaPlus className='text-xs' />
@@ -130,45 +117,41 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
               </div>
 
               {/* Meals List */}
-              {typeMeals.length === 0 ? (
+              {itemsCount === 0 ? (
                 <div className='text-center py-3 text-text-body'>
-                  <div className='text-2xl mb-1 opacity-50'>{getMealTypeIcon(mealType)}</div>
+                  <div className='text-2xl mb-1 opacity-50'>{getMealTypeIcon(mealType.key)}</div>
                   <p className='text-xs'>
                     Chưa có{' '}
-                    {mealType === 'breakfast'
+                    {mealType.key === 'breakfast'
                       ? 'bữa sáng'
-                      : mealType === 'lunch'
+                      : mealType.key === 'lunch'
                       ? 'bữa trưa'
-                      : mealType === 'dinner'
+                      : mealType.key === 'dinner'
                       ? 'bữa tối'
-                      : mealType === 'snack'
-                      ? 'đồ ăn vặt'
-                      : mealType}{' '}
+                      : mealType.key}{' '}
                     nào
                   </p>
                   <button
-                    onClick={() => onAddMeal(mealType)}
+                    onClick={() => onAddMeal(mealType.key)}
                     className='mt-1 text-primary hover:text-primary/80 text-xs font-medium'
                   >
                     Thêm{' '}
-                    {mealType === 'breakfast'
+                    {mealType.key === 'breakfast'
                       ? 'bữa sáng'
-                      : mealType === 'lunch'
+                      : mealType.key === 'lunch'
                       ? 'bữa trưa'
-                      : mealType === 'dinner'
+                      : mealType.key === 'dinner'
                       ? 'bữa tối'
-                      : mealType === 'snack'
-                      ? 'đồ ăn vặt'
-                      : mealType}
+                      : mealType.key}
                   </button>
                 </div>
               ) : (
                 <div className='space-y-2'>
-                  {typeMeals.map((meal) => (
+                  {mealData.meals.map((meal: any, index: number) => (
                     <div
-                      key={meal.id}
+                      key={index}
                       className='flex items-center justify-between p-2 bg-bg rounded-lg border border-border-light hover:border-primary/50 transition-colors cursor-pointer'
-                      onClick={() => onEditMeal(meal.id)}
+                      onClick={() => onEditMeal(`${mealType.key}-${index}`)}
                     >
                       <div className='flex items-center flex-1'>
                         {/* Meal Image or Icon */}
@@ -180,24 +163,27 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
                               className='w-full h-full object-cover rounded-lg'
                             />
                           ) : (
-                            getMealTypeIcon(meal.type)
+                            getMealTypeIcon(mealType.key)
                           )}
                         </div>
 
                         {/* Meal Info */}
                         <div className='flex-1 min-w-0'>
                           <div className='flex items-center'>
-                            <h4 className='font-medium text-sm text-text-header truncate'>{meal.name}</h4>
+                            <h4 className='font-medium text-sm text-text-header truncate'>{meal.name || 'Món ăn'}</h4>
                             <div className='ml-1 flex items-center space-x-1'>
-                              {getSourceIcon(meal.source)}
+                              {getSourceIcon(meal.source || 'manual')}
                               {meal.isLogged && <FaCheckCircle className='text-green-500 text-xs' />}
                             </div>
                           </div>
                           <div className='flex items-center text-xs space-x-2'>
-                            <span className='text-text-body font-medium'>{meal.calories} cal</span>
-                            <span className='text-text-body text-xs'>
-                              P:{meal.macros.protein}g•C:{meal.macros.carbohydrates}g•F:{meal.macros.fat}g
-                            </span>
+                            <span className='text-text-body font-medium'>{meal.kcal || 0} kcal</span>
+                            {meal.macros && (
+                              <span className='text-text-body text-xs'>
+                                P:{meal.macros.protein || 0}g•C:{meal.macros.carbohydrates || 0}g•F:
+                                {meal.macros.fat || 0}g
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -205,7 +191,7 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
                       {/* Time */}
                       <div className='flex items-center text-xs text-text-body ml-2'>
                         <FaClock className='mr-0.5' />
-                        <span>{formatTime(meal.time)}</span>
+                        <span>{meal.time ? formatTime(new Date(meal.time)) : '--:--'}</span>
                       </div>
                     </div>
                   ))}
@@ -221,15 +207,15 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
         <div className='flex items-center justify-between'>
           <span className='text-xs font-medium text-text-body'>Quick Add:</span>
           <div className='flex space-x-1'>
-            {mealTypes.map((type) => (
+            {mealTypes.map((mealType) => (
               <button
-                key={type}
-                onClick={() => onAddMeal(type)}
+                key={mealType.key}
+                onClick={() => onAddMeal(mealType.key)}
                 className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${getMealTypeColor(
-                  type
+                  mealType.key
                 )} hover:opacity-80`}
               >
-                +{type.substring(0, 1).toUpperCase()}
+                +{mealType.key.substring(0, 1).toUpperCase()}
               </button>
             ))}
           </div>

@@ -46,7 +46,6 @@ export default function QuickActions({ actions, onScan }: QuickActionsProps) {
       </div>
 
       <div className='grid grid-cols-1 gap-3'>
-        {/* Chỉ hiển thị 2 actions đầu tiên */}
         {actions.slice(0, 2).map((action) => (
           <button
             key={action.id}
@@ -55,7 +54,7 @@ export default function QuickActions({ actions, onScan }: QuickActionsProps) {
               action.type
             )}`}
           >
-            <div className='flex items-center'>
+            <div className='flex items-center cursor-pointer'>
               <div className='p-1.5 bg-bg rounded-lg mr-2'>{getActionIcon(action.type)}</div>
               <div className='text-left flex-1 min-w-0'>
                 <h3 className='font-semibold text-sm truncate'>{action.title}</h3>

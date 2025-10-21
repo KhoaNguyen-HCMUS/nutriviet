@@ -186,7 +186,7 @@ const ChatContainer: React.FC = () => {
   };
 
   return (
-    <div className='flex h-screen overflow-hidden'>
+    <div className='flex h-[calc(100vh-64px)] overflow-hidden'>
       {/* Session Sidebar */}
       <SessionSidebar
         sessions={sessions}

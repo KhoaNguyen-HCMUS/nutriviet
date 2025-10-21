@@ -48,21 +48,6 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading = false, 
             cậy.
           </p>
 
-          {/* Quick Suggestions */}
-          <div className='mt-6'>
-            <div className='text-sm font-medium text-gray-700 mb-3'>Gợi ý câu hỏi:</div>
-            <div className='space-y-3'>
-              <div className='text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-100 transition-colors cursor-pointer shadow-sm'>
-                💊 "Triệu chứng của bệnh gan nhiễm mỡ"
-              </div>
-              <div className='text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-100 transition-colors cursor-pointer shadow-sm'>
-                🌡️ "Tôi bị sốt và đau đầu"
-              </div>
-              <div className='text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-100 transition-colors cursor-pointer shadow-sm'>
-                ❤️ "Cách phòng ngừa tăng huyết áp"
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     );

@@ -39,7 +39,7 @@ export class ChatService {
       });
 
       const data = await response.json();
-
+      
       if (!response.ok) {
         throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
       }
@@ -74,7 +74,10 @@ export class ChatService {
         throw new Error(data.message || 'Failed to send message');
       }
 
-      return data;
+      return {
+        ...data,
+        sessionTitle: data.data?.session_title || null
+      }
     } catch (error) {
       console.error('❌ Send message error:', error);
       throw error;

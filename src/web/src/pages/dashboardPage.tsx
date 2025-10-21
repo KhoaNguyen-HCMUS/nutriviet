@@ -61,7 +61,6 @@ export default function DashboardPage() {
       setDashboardData(dashboardData);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
-      toast.error('Không thể tải dữ liệu bảng điều khiển');
     } finally {
       setIsLoading(false);
     }
@@ -72,15 +71,7 @@ export default function DashboardPage() {
   };
 
   const handleAddMeal = (mealType?: string) => {
-    if (mealType) {
-      toast.info(`Adding ${mealType}...`);
-    } else {
-      toast.info('Add meal feature coming soon!');
-    }
-  };
-
-  const handleEditMeal = (mealId: string) => {
-    toast.info(`Editing meal ${mealId}...`);
+    navigate('/food-recognition');
   };
 
   if (isLoading) {
@@ -174,7 +165,7 @@ export default function DashboardPage() {
               <ProgressTracker progress={dashboardData.todaysProgress} />
             </div>
             <div>
-              <TodayMeals meals={dashboardData.todaysMeals} onAddMeal={handleAddMeal} onEditMeal={handleEditMeal} />
+              <TodayMeals meals={dashboardData.todaysMeals} onAddMeal={handleAddMeal} />
             </div>
           </div>
         </div>

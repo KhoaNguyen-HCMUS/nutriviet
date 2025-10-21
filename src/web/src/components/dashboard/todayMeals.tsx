@@ -4,10 +4,9 @@ import type { TodayMeals as TodayMealsType } from '../../types/dashboard';
 interface TodayMealsProps {
   meals: TodayMealsType;
   onAddMeal: (mealType: string) => void;
-  onEditMeal: (mealId: string) => void;
 }
 
-export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsProps) {
+export default function TodayMeals({ meals, onAddMeal }: TodayMealsProps) {
   const getMealTypeIcon = (type: string) => {
     switch (type) {
       case 'breakfast':
@@ -150,8 +149,7 @@ export default function TodayMeals({ meals, onAddMeal, onEditMeal }: TodayMealsP
                   {mealData.meals.map((meal: any, index: number) => (
                     <div
                       key={index}
-                      className='flex items-center justify-between p-2 bg-bg rounded-lg border border-border-light hover:border-primary/50 transition-colors cursor-pointer'
-                      onClick={() => onEditMeal(`${mealType.key}-${index}`)}
+                      className='flex items-center justify-between p-2 bg-bg rounded-lg border border-border-light hover:border-primary/50 transition-colors'
                     >
                       <div className='flex items-center flex-1'>
                         {/* Meal Image or Icon */}
